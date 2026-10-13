@@ -60,7 +60,7 @@
 
 - **Nom :** Pomme
 - **Âge :** 38 ans
-- **Rôle :** Gérante et fondatrice du bar à chats *Coffee Cat*
+- **Rôle :** Gérante et fondatrice du bar à chats *L'EAntre Chat *
 - **Parcours :** Ancienne salariée en restauration, passionnée par la protection animale. Elle a ouvert son café il y a 2 ans en partenariat avec une association qui lui confie des chats à l'adoption.
 - **Aisance numérique :** Moyenne. Elle utilise son smartphone et les réseaux sociaux au quotidien, mais n'a pas d'outil dédié à la gestion de son commerce.
 
