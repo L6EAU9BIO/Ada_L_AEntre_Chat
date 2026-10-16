@@ -42,30 +42,91 @@ La première version est centrée sur la **réservation** :
 ## Structure du projet
 
 ```
-lovelace_factory/
+Ada_Lovelace_factory/
+├── .env.exemple           # modèle des variables d'environnement
+├── .gitignore
+├── eslint.config.js
+├── index.html
+├── package.json
+├── package-lock.json
+├── vite.config.js
+│
 ├── back/
-│   ├── server/
-│   │   ├── server.js        # point d'entrée de l'API Express
-│   │   └── db.js            # connexion à PostgreSQL (pool pg)
-│   └── routes/              # une route par ressource
-│       ├── admin.js
-│       ├── chat.js
-│       ├── client.js
-│       ├── reservation.js
-│       ├── staff.js
-│       └── task.js
-├── db/
-│   ├── docker-compose.yml   # conteneur PostgreSQL (non versionné)
-│   ├── migration_up.sql     # création des tables
-│   ├── migration_down.sql   # suppression des tables
-│   └── seed.sql             # données de test
-├── front/
-│   ├── assets/              # logo et visuels du site
-│   └── src/                 # composants React
+│   ├── routes/            # une route par ressource
+│   │   ├── admin.js
+│   │   ├── chat.js
+│   │   ├── client.js
+│   │   ├── reservation.js
+│   │   ├── staff.js
+│   │   └── task.js
+│   └── server/
+│       ├── db.js         # connexion à PostgreSQL (pool pg)
+│       └── server.js     # point d'entrée de l'API Express
+│
 ├── build/
-│   └── wireframe/           # maquettes des parcours de la V1
-├── .env.exemple             # modèle des variables d'environnement
-└── package.json
+│   ├── dossier/
+│   │   ├── Capture/
+│   │   │   ├── 28 septembre - 04 octobre/   # brouillons, personas, maquettes
+│   │   │   ├── 5 octobre - 11 octobre/      # MoSCoW, user stories, logos
+│   │   │   └── 12 octobre - 18 octobre/     # 3ème maquette accueil + login
+│   │   ├── Section-1/
+│   │   │   └── description_projet.md
+│   │   ├── Section-3.1/
+│   │   │   └── Persona.md
+│   │   ├── Section-3.2/
+│   │   │   ├── Contexte.txt
+│   │   │   └── tableau_risques.md
+│   │   ├── Section-4.1/
+│   │   │   └── test.md
+│   │   ├── Section-4.3/
+│   │   │   └── test.md
+│   │   ├── Section-5.3/
+│   │   │   └── justif_adr.md
+│   │   └── Section-6/
+│   │       └── test.md
+│   └── wireframe/n                   # maquettes des parcours de la V1
+│       ├── accueil.png
+│       ├── consulter_reservation.png
+│       ├── reservation_accueil.png
+│       ├── reservation_salon.png
+│       └── dossier/
+│           └── Section-6/
+│               ├── environement-humain.md
+│               └── objectif-qualité.md
+│
+├── db/
+│   ├── docker-compose.yml     # conteneur PostgreSQL (non versionné)
+│   ├── migration_up.sql       # création des tables
+│   ├── migration_down.sql     # suppression des tables
+│   └── seed.sql               # données de test
+│
+├── docs/
+│   ├── README.md
+│   └── adr/
+│       ├── 0001-choix-de-workflow.md
+│       ├── 0002-convention-nommage-branche.md
+│       └── 0003-convention-nomage-commit.md
+│
+├── front/
+│   ├── assets/             # logo et visuels du site
+│   │   ├── adoption.png
+│   │   ├── logo.png
+│   │   ├── menu.png
+│   │   ├── nos_chats.png
+│   │   ├── planning.png
+│   │   └── reservation.png
+│   └── src/                 # composants React
+│       ├── App.css
+│       ├── App.jsx
+│       ├── index.css
+│       └── main.jsx
+│
+├── lovelace-factory/
+│   ├── conception/
+│   └── requetes/
+│
+└── test/
+    └── tets.md
 ```
 
 ---
