@@ -232,8 +232,7 @@ Les wireframes des parcours de la V1 sont dans `build/wireframe/` :
 
 ## Équipe
 
-- Aurélie — *GitHub à ajouter*
-- Alison — *GitHub à ajouter*
+- Alison — [@alisonbarros787-hash](https://github.com/alisonbarros787-hash)
 - Marin Nicolle Poussier — [@L6EAU9BIO](https://github.com/L6EAU9BIO)
 
 ---
