@@ -1,0 +1,18 @@
+services:
+  db:
+    image: postgres:16
+    container_name: lovelacefactory_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: marin
+      POSTGRES_PASSWORD:  chaton
+      POSTGRES_DB: lovelacefactory
+    ports:
+      - "5439:5432"
+    volumes:
+      - ./migration_up.sql:/docker-entrypoint-initdb.d/migration_up.sql
+      - ./seed.sql:/docker-entrypoint-initdb.d/seed.sql
+      - lovelacefactory_data:/var/lib/postgresql/data
+
+volumes:
+  lovelacefactory_data :

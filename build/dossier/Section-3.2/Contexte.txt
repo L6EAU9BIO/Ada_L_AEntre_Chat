@@ -1,0 +1,2 @@
+Nous cherchons à résoudre un problème de reservation  pour Pomme qui est la gérante d'un bar à chat, 
+lorsqu’elle doit réserver des tables/salles pour ses clients 
