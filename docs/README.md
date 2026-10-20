@@ -131,6 +131,67 @@ Ada_Lovelace_factory/
 
 ---
 
+##  Architecture
+
+Le projet suit une **architecture en couches** : chaque couche a une responsabilité unique et ne dépend que de la couche située juste en dessous. Cela facilite la maintenance, les tests et l'évolution du code.
+
+### Back-end
+
+```
+┌──────────────────────────────────────┐
+│  Présentation (Controllers / Routes) │  ← reçoit les requêtes HTTP, valide les entrées
+├──────────────────────────────────────┤
+│  Service (logique métier)            │  ← règles métier, orchestration
+├──────────────────────────────────────┤
+│  Repository (accès aux données)      │  ← requêtes en base, abstraction du stockage
+├──────────────────────────────────────┤
+│  Base de données                     │
+└──────────────────────────────────────┘
+```
+
+| Couche | Rôle | Dossier |
+|---|---|---|
+| **Controllers / Routes** | Point d'entrée de l'API : reçoit les requêtes, appelle les services, renvoie la réponse | `src/controllers` |
+| **Services** | Contient la logique métier. Ne connaît ni HTTP ni la base de données | `src/services` |
+| **Repositories** | Seule couche qui dialogue avec la base de données | `src/repositories` |
+| **Models / Entities** | Définition des objets métier et du schéma de données | `src/models` |
+| **DTO / Validators** | Validation et mapping des données entrantes et sortantes | `src/dto` |
+| **Middlewares** | Authentification, gestion des erreurs, logs | `src/middlewares` |
+
+**Règle principale** : un controller n'appelle jamais directement un repository, il passe toujours par un service.
+
+### Front-end
+
+```
+┌──────────────────────────────────────┐
+│  Pages / Vues                        │  ← écrans de l'application
+├──────────────────────────────────────┤
+│  Composants (UI)                     │  ← éléments réutilisables
+├──────────────────────────────────────┤
+│  Hooks / State (store)               │  ← gestion de l'état et de la logique de vue
+├──────────────────────────────────────┤
+│  Services API                        │  ← appels HTTP vers le back-end
+└──────────────────────────────────────┘
+```
+
+| Couche | Rôle | Dossier |
+|---|---|---|
+| **Pages** | Assemblent les composants et définissent les routes | `src/pages` |
+| **Composants** | Éléments d'interface réutilisables, sans logique d'appel API | `src/components` |
+| **Hooks / Store** | Gestion de l'état global et de la logique partagée | `src/hooks`, `src/store` |
+| **Services API** | Centralisent tous les appels vers le back-end | `src/services` |
+| **Types / Utils** | Types partagés et fonctions utilitaires | `src/types`, `src/utils` |
+
+**Règle principale** : les composants n'effectuent pas d'appels HTTP directement, ils passent par les hooks ou les services API.
+
+### Flux d'une requête
+
+```
+Utilisateur → Page → Hook/Store → Service API → [HTTP] → Controller → Service → Repository → BDD
+```
+
+La réponse remonte ensuite par le même chemin en sens inverse.
+
 ## Installation
 
 ### Prérequis
