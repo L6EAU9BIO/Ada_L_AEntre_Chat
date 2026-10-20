@@ -1,0 +1,18 @@
+name: Garde-fou main
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, edited, synchronize, reopened]
+
+jobs:
+  check-source:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Vérifier la branche source
+        run: |
+          if [ "${{ github.head_ref }}" != "dev" ]; then
+            echo "❌ Seule dev peut aller dans main (source : ${{ github.head_ref }})"
+            exit 1
+          fi
+          echo "✅ PR depuis dev, OK"
