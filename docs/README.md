@@ -192,6 +192,40 @@ Utilisateur → Page → Hook/Store → Service API → [HTTP] → Controller �
 
 La réponse remonte ensuite par le même chemin en sens inverse.
 
+## FICHE DE FLUX (BACK)
+
+# Flux — action : ajout reservation
+# Flux — action : ajout réservation
+
+1. Front :
+   - Composant / page : `<fichier>` (formulaire de réservation)
+   - Appel : `POST /api/reservations` avec `{ ... }`
+   - Rôle : saisie et affichage uniquement, aucune règle métier
+
+2. Route :
+   - `POST /api/reservations` => `ReservationController`
+   - Rôle : mapper l'URL vers le controller (+ middlewares auth)
+
+3. Controller : `ReservationController`
+   - valide : format des champs (date valide, champs requis, types)
+   - code : 422 si la validation échoue
+   - Rôle : valider l'entrée, appeler le service, renvoyer la réponse
+   - Ne contient pas : de règle métier ni de requête DB
+
+4. Service : `ReservationService::create()`
+   - règle : ex. créneau disponible, pas de chevauchement, date dans le futur,
+     capacité non dépassée
+   - code : 409 (conflit) / 422 (règle violée)
+   - Rôle : toute la logique métier
+
+5. Model : `Reservation`
+   - Rôle : accès aux données (create, requêtes), relations, casts
+   - Ne contient pas : de règle métier
+
+6. Retour : code 201 (créé) + la réservation en JSON
+   - Erreurs : 422 validation · 409 conflit · 401/403 accès
+
+
 ## Installation
 
 ### Prérequis
