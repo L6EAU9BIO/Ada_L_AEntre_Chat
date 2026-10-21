@@ -1,17 +1,15 @@
-
-  services:
+services:
   db:
     image: postgres:18
     container_name: aentre-chat-db
-    environment:
-      POSTGRES_USER: marin
-      POSTGRES_PASSWORD: chaton
-      POSTGRES_DB: aentre_chat
+    env_file:
+      - ../back/.env
     ports:
-      "5432:5432"
+      - "5432:5432"
     volumes:
-         lovelacefactory_data:/var/lib/postgresql
-          ./migration_up.sql:/docker-entrypoint-initdb.d/01_migration_up.sql
-          ./seed.sql:/docker-entrypoint-initdb.d/02_seed.sql
-    volumes:
-      lovelacefactory_data:
+      - lovelacefactory_data:/var/lib/postgresql
+      - ./migration_up.sql:/docker-entrypoint-initdb.d/01_migration_up.sql
+      - ./seed.sql:/docker-entrypoint-initdb.d/02_seed.sql
+
+volumes:
+  lovelacefactory_data:
