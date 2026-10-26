@@ -1,10 +1,16 @@
+//  Controller : `ReservationController`
+//    - valide : format des champs (date valide, champs requis, types)
+//    - code : 422 si la validation échoue
+//    - Rôle : valider l'entrée, appeler le service, renvoyer la réponse
+//    - Ne contient pas : de règle métier ni de requête DB
+
 // Role : recevoir la requete , appeler le service puis renvoyer la reponse 
 
-const DbService = require('../services/DbService')
+import * as DbService from "../services/DbService.js"
 
 // "req" = requete reçut , "res" = reponse a  renvoyer 
 // La fonction est "async" car le service interroge la bdd 
-async function testConnexion(req, res) {
+export async function testConnexion(req, res) {
     try {
         const resultat = await DbService.verifierConnexion()
 
@@ -15,5 +21,3 @@ async function testConnexion(req, res) {
         res.status(500).json({ connecte: false, erreur: err.message })
     }
 }
-
-module.export = {testConnexion}
