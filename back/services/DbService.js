@@ -1,11 +1,12 @@
 // Role : toute la logique metier 
 //  Regle : "la connextion est ok si la base répond avec un horaire"
-const DbModel = require()
 
-async function verifierConnexion() {
+import DbModel from "../models/DbModel.js"
+
+export async function verifierConnexion() {
     const connect = await DbModel.getHeureServeur()
 
-    // Regle : si l abase ne répond rien , on considere la connextion comme null
+    // Regle : si l abase ne répond rien, on considere la connextion comme null
     if (!connect) {
         throw new Error('La base de donnée ne répond pas..')
     }
@@ -14,14 +15,12 @@ async function verifierConnexion() {
 }
 
 // Test au démarrage du serveur : meme logique , mais avec des des console.log
-async function testConnexionDemarrage() {
+export async function testConnexionDemarrage() {
     // try / catch , si une erreur survint , on la recupere dans le catch (sans tous faire planté..)
     try{
-        const resultat = await DbModel.getOkHeure()
+        const resultat = await DbModel.verifierConnexion()
         console.log('Connexion PostgreSQL OK :', resultat)
     } catch (err) {
         console.error('Erreur de connexion PostgreSQL :', err.message)
     }
 };
-
-module.exports = { verifierConnexion, testConnexionDemarrage }
