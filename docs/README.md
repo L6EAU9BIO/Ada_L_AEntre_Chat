@@ -59,9 +59,15 @@ Ada_Lovelace_factory/
 │   │   ├── reservation.js
 │   │   ├── staff.js
 │   │   └── task.js
-│   └── server/
-│       ├── db.js         # connexion à PostgreSQL (pool pg)
-│       └── server.js     # point d'entrée de l'API Express
+│   ├── server/
+│   |    ├── db.js         # connexion à PostgreSQL (pool pg)
+│   |    └── server.js     # point d'entrée de l'API Express
+|   ├── controllers/
+|   |    ├──
+|   ├── services/
+|   |    ├──
+|   ├── models
+|        ├──
 │
 ├── build/
 │   ├── dossier/
@@ -105,7 +111,9 @@ Ada_Lovelace_factory/
 │   └── adr/
 │       ├── 0001-choix-de-workflow.md
 │       ├── 0002-convention-nommage-branche.md
-│       └── 0003-convention-nomage-commit.md
+│       ├── 0003-convention-nomage-commit.md
+|       ├── 0004-convention-commentaires-PR.md
+|       └── 0005-choix-stack-technique.md
 │
 ├── front/
 │   ├── assets/             # logo et visuels du site
@@ -120,6 +128,31 @@ Ada_Lovelace_factory/
 │       ├── App.jsx
 │       ├── index.css
 │       └── main.jsx
+|             ├── components/  
+|             |       ├── Booking/ 
+|             |       |       ├──
+|             |       ├── Header/    
+|             |       |       ├──
+|             |       |
+|             |       ├── ManageBooking/
+|             |       |       ├──
+|             |       |
+|             |       |
+|             |       ├── NavBar/
+|             |               ├──
+|             |
+|             |                  
+|             ├── hooks/  
+|             |
+|             |
+|             ├── pages/  
+|             |
+|             |
+|             ├── services/  
+|             |
+|             |
+|             ├── state/  
+|             
 │
 ├── lovelace-factory/
 │   ├── conception/
@@ -143,20 +176,16 @@ Le projet suit une **architecture en couches** : chaque couche a une responsabil
 ├──────────────────────────────────────┤
 │  Service (logique métier)            │  ← règles métier, orchestration
 ├──────────────────────────────────────┤
-│  Repository (accès aux données)      │  ← requêtes en base, abstraction du stockage
-├──────────────────────────────────────┤
 │  Base de données                     │
 └──────────────────────────────────────┘
 ```
 
 | Couche | Rôle | Dossier |
 |---|---|---|
-| **Controllers / Routes** | Point d'entrée de l'API : reçoit les requêtes, appelle les services, renvoie la réponse | `src/controllers` |
-| **Services** | Contient la logique métier. Ne connaît ni HTTP ni la base de données | `src/services` |
-| **Repositories** | Seule couche qui dialogue avec la base de données | `src/repositories` |
-| **Models / Entities** | Définition des objets métier et du schéma de données | `src/models` |
-| **DTO / Validators** | Validation et mapping des données entrantes et sortantes | `src/dto` |
-| **Middlewares** | Authentification, gestion des erreurs, logs | `src/middlewares` |
+| **Controllers / Routes** | Point d'entrée de l'API : reçoit les requêtes, appelle les services, renvoie la réponse | `back/controllers` |
+| **Services** | Contient la logique métier. Ne connaît ni HTTP ni la base de données | `back/services` |
+| **Models / Entities** | Définition des objets métier et du schéma de données | `back/models` |
+| **Middlewares** | Authentification, gestion des erreurs, logs | `back/middlewares` |
 
 **Règle principale** : un controller n'appelle jamais directement un repository, il passe toujours par un service.
 
@@ -194,7 +223,6 @@ La réponse remonte ensuite par le même chemin en sens inverse.
 
 ## FICHE DE FLUX (BACK)
 
-# Flux — action : ajout reservation
 # Flux — action : ajout réservation
 
 1. Front :
@@ -327,7 +355,7 @@ Les wireframes des parcours de la V1 sont dans `build/wireframe/` :
 
 ## Équipe
 
-- Alison — [@alisonbarros787-hash](https://github.com/alisonbarros787-hash)
+- Alison Barros — [@alisonbarros787-hash](https://github.com/alisonbarros787-hash)
 - Marin Nicolle Poussier — [@L6EAU9BIO](https://github.com/L6EAU9BIO)
 
 ---
