@@ -12,9 +12,17 @@
 BEGIN;
 
 -- -------------------------------------------------------------
--- ROOM (room_id 1 à 3)
+-- STAFFS (id 1 = Pomme, 2 = Lucas, 3 = Inès)
 -- -------------------------------------------------------------
-INSERT INTO room (nom, nbr_place, acces_pmr, description) VALUES
+INSERT INTO staffs (nom, prenom, num_tel, role, mail, date_arrivee, date_depart) VALUES
+('Martin',  'Pomme', '06 00 00 01 01', 'gerant',  'pomme@laentrechat.fr', '2024-03-01', NULL),
+('Garnier', 'Lucas', '06 00 00 01 02', 'employe', 'lucas@laentrechat.fr', '2025-06-15', NULL),
+('Moreau',  'Inès',  '06 00 00 01 03', 'employe', 'ines@laentrechat.fr',  '2026-01-05', NULL);
+
+-- -------------------------------------------------------------
+-- ROOMS (id 1 = Salon, 2 = L'Étage, 3 = Cocon)
+-- -------------------------------------------------------------
+INSERT INTO rooms (nom, nbr_places, acces_pmr, description) VALUES
 ('Le Salon', 20, true,
  'La grande salle de plain-pied, ouverte sur la vitrine. Canapés, tables basses et arbres à chats au plafond : c''est ici que la plupart des pensionnaires font la sieste au soleil. Idéale pour les groupes et les anniversaires.'),
 ('L''Étage', 15, false,
@@ -23,82 +31,86 @@ INSERT INTO room (nom, nbr_place, acces_pmr, description) VALUES
  'Petite pièce feutrée en rez-de-chaussée, pensée pour les chats timides et les visites en petit comité. Éclairage doux, bruit limité, accès de plain-pied. Recommandée pour une première rencontre avant une adoption.');
 
 -- -------------------------------------------------------------
--- STAFF (staff_id 1 = Pomme, 2 = Lucas, 3 = Inès)
+-- CUSTOMERS (id 1 à 8)
 -- -------------------------------------------------------------
-INSERT INTO staff (nom, prenom, num_tel, role, mail, date_arrivee, date_depart) VALUES
-('Martin',  'Pomme', '06 00 00 01 01', 'gerant',  'pomme@laentrechat.fr', '2024-03-01', NULL),
-('Garnier', 'Lucas', '06 00 00 01 02', 'employe', 'lucas@laentrechat.fr', '2025-06-15', NULL),
-('Moreau',  'Inès',  '06 00 00 01 03', 'employe', 'ines@laentrechat.fr',  '2026-01-05', NULL);
+INSERT INTO customers (nom, prenom, num_tel, role, mail, date_arrivee) VALUES
+('Dupuis',   'Claire',  '06 00 00 02 01', 'client',   'claire.dupuis@exemple.fr',   '2026-11-16'), -- 1
+('Lefebvre', 'Hugo',    '06 00 00 02 02', 'client',   'hugo.lefebvre@exemple.fr',   '2026-11-17'), -- 2
+('Nguyen',   'Linh',    '06 00 00 02 03', 'adoptant', 'linh.nguyen@exemple.fr',     '2026-10-04'), -- 3
+('Rousseau', 'Paul',    '06 00 00 02 04', 'adoptant', 'paul.rousseau@exemple.fr',   '2026-05-20'), -- 4 : a rendu Bao
+('Benali',   'Yasmine', '06 00 00 02 05', 'adoptant', 'yasmine.benali@exemple.fr',  '2026-10-21'), -- 5
+('Fontaine', 'Jeanne',  '06 00 00 02 06', 'client',   'jeanne.fontaine@exemple.fr', '2026-11-21'), -- 6
+('Le Goff',  'Erwan',   '06 00 00 02 07', 'client',   NULL,                          '2026-11-21'), -- 7
+('Perrin',   'Sacha',   '06 00 00 02 08', 'adoptant', 'sacha.perrin@exemple.fr',    '2026-11-22'); -- 8 : rencontre, adoption pas encore faite
 
 -- -------------------------------------------------------------
--- CUSTOMER (customer_id 1 à 8) — un client par réservation
+-- CATS (id 1 à 20)
 -- -------------------------------------------------------------
-INSERT INTO customer (nom, num_tel) VALUES
-('Dupuis',   '06 00 00 02 01'),  -- 1
-('Lefebvre', '06 00 00 02 02'),  -- 2
-('Nguyen',   '06 00 00 02 03'),  -- 3
-('Rousseau', '06 00 00 02 04'),  -- 4
-('Benali',   '06 00 00 02 05'),  -- 5
-('Fontaine', '06 00 00 02 06'),  -- 6
-('Le Goff',  '06 00 00 02 07'),  -- 7
-('Perrin',   '06 00 00 02 08');  -- 8
+INSERT INTO cats (nom, date_arrivee, date_depart, date_naissance, race, sexe) VALUES
+('Mochi',      '2025-02-10', NULL,         '2022-05-14', 'Européen',          'F'), -- 1
+('Pixel',      '2025-04-03', NULL,         '2023-08-01', 'Bengal',            'M'), -- 2
+('Tofu',       '2025-05-20', NULL,         '2021-03-22', 'Ragdoll',           'M'), -- 3
+('Miso',       '2025-07-11', NULL,         '2024-01-09', 'Européen',          'F'), -- 4
+('Biscotte',   '2025-08-30', NULL,         '2019-11-30', 'Chartreux',         'F'), -- 5
+('Gribouille', '2025-09-14', NULL,         '2023-02-17', 'Européen',          'M'), -- 6
+('Noisette',   '2025-10-02', NULL,         '2022-09-05', 'Sacré de Birmanie', 'F'), -- 7
+('Ficelle',    '2025-11-18', NULL,         '2024-04-12', 'Européen',          'F'), -- 8
+('Caramel',    '2025-12-01', NULL,         '2020-07-25', 'Maine Coon',        'M'), -- 9
+('Plume',      '2026-01-07', NULL,         '2023-12-03', 'Siamois',           'F'), -- 10
+('Sushi',      '2026-01-22', NULL,         NULL,         'Inconnu',           'M'), -- 11
+('Réglisse',   '2026-02-15', NULL,         '2018-10-10', 'Européen',          'M'), -- 12
+('Praline',    '2026-03-03', NULL,         '2025-01-20', 'British Shorthair', 'F'), -- 13
+('Chaussette', '2026-03-28', NULL,         '2022-02-28', 'Européen',          'M'), -- 14
+('Olive',      '2026-04-16', NULL,         '2024-09-09', 'Norvégien',         'F'), -- 15
+('Gaufre',     '2026-05-09', NULL,         '2025-03-02', 'Européen',          'M'), -- 16
+('Pistache',   '2026-06-21', NULL,         '2023-05-15', 'Persan',            'F'), -- 17
+('Bao',        '2025-06-01', NULL,         '2021-12-01', 'Européen',          'M'), -- 18
+('Câline',     '2025-03-17', '2026-11-18', '2020-04-04', 'Sacré de Birmanie', 'F'), -- 19 : adoptée par le client 3
+('Filou',      '2025-10-25', '2026-11-19', '2024-02-14', 'Européen',          'M'); -- 20 : adopté par le client 5
 
 -- -------------------------------------------------------------
--- RESERVER_CUSTOMER — semaine du 16 au 22 novembre 2026
+-- RESERVATIONS — semaine du 16 au 22 novembre 2026
 -- room_id : 1 = Salon (20), 2 = L'Étage (15), 3 = Cocon (6)
+-- Soit customer_id (réservation client), soit staff_id (créneau bloqué par l'équipe)
 -- -------------------------------------------------------------
-INSERT INTO reserver_customer (customer_id, room_id, date_resa, heure_debut, heure_fin, nb_personnes) VALUES
-(1, 1, '2026-11-16', '14:00', '16:00',  4),  -- lundi, Salon
-(2, 3, '2026-11-17', '10:30', '12:00',  2),  -- mardi, Cocon
-(3, 2, '2026-11-18', '15:00', '17:00',  8),  -- mercredi, Étage (anniversaire)
-(4, 1, '2026-11-18', '16:00', '18:00',  6),  -- mercredi, Salon
-(5, 3, '2026-11-19', '14:00', '15:30',  3),  -- jeudi, Cocon (accès PMR)
-(6, 1, '2026-11-21', '11:00', '13:00', 12),  -- samedi, Salon
-(7, 2, '2026-11-21', '14:00', '16:00',  5),  -- samedi, Étage
-(8, 3, '2026-11-22', '16:00', '17:30',  2);  -- dimanche, Cocon
+INSERT INTO reservations (date_reservation, places_reservation, customer_id, staff_id, room_id) VALUES
+('2026-11-16 09:00', 20, NULL, 2, 1),  -- lundi, Lucas bloque le Salon (grand ménage)
+('2026-11-16 14:00',  4, 1,    NULL, 1),  -- lundi, Salon
+('2026-11-17 10:30',  2, 2,    NULL, 3),  -- mardi, Cocon
+('2026-11-18 15:00',  8, 3,    NULL, 2),  -- mercredi, Étage (anniversaire)
+('2026-11-18 16:00',  6, 4,    NULL, 1),  -- mercredi, Salon
+('2026-11-19 10:00',  6, NULL, 3, 3),  -- jeudi, Inès bloque le Cocon (vétérinaire)
+('2026-11-19 14:00',  3, 5,    NULL, 3),  -- jeudi, Cocon (accès PMR)
+('2026-11-20 18:00', 15, NULL, 1, 2),  -- vendredi, Pomme privatise l'Étage (atelier dessin)
+('2026-11-21 11:00', 12, 6,    NULL, 1),  -- samedi, Salon
+('2026-11-21 14:00',  5, 7,    NULL, 2),  -- samedi, Étage
+('2026-11-22 16:00',  2, 8,    NULL, 3);  -- dimanche, Cocon (rencontre avec Bao)
 
 -- -------------------------------------------------------------
--- RESERVER_STAFF — créneaux bloqués par l'équipe la même semaine
+-- INTERVENTIONS — soins et suivi des chats
+-- staff_id : 1 = Pomme, 2 = Lucas, 3 = Inès
 -- -------------------------------------------------------------
-INSERT INTO reserver_staff (staff_id, room_id, date_resa, heure_debut, heure_fin, motif) VALUES
-(2, 1, '2026-11-16', '09:00', '11:00', 'Grand ménage du Salon'),
-(3, 3, '2026-11-19', '10:00', '12:00', 'Visite du vétérinaire'),
-(1, 2, '2026-11-20', '18:00', '21:00', 'Soirée privatisée : atelier dessin');
+INSERT INTO interventions (date_intervention, motif, resultat, cat_id, staff_id) VALUES
+('2026-11-16', 'Brossage et contrôle des griffes', 'RAS',                                   9,  2),
+('2026-11-17', 'Pesée mensuelle',                  '4,2 kg, poids stable',                 1,  2),
+('2026-11-17', 'Vermifuge',                        'Donné, prochain dans 3 mois',          16, 3),
+('2026-11-19', 'Visite du vétérinaire : rappel vaccin', 'Vaccin fait',                     12, 3),
+('2026-11-19', 'Visite du vétérinaire : dents',    'Détartrage conseillé',                 5,  3),
+('2026-11-19', 'Bilan avant adoption',             'Apte à l''adoption',                   20, 1),
+('2026-11-20', 'Chat stressé, se cache',           'Isolé au Cocon, à surveiller',         11, 2),
+('2026-11-21', 'Suivi après isolement',            'Ressort, mange normalement',           11, 3),
+('2026-11-22', 'Préparation rencontre adoption',   'Rencontre positive avec le client 8', 18, 1);
 
 -- -------------------------------------------------------------
--- CATS (cat_id 1 à 20)
--- customer_id + date_adoption remplis seulement pour les adoptés
+-- CATS_CUSTOMERS
+-- date_adoption NULL = rencontre faite, adoption pas encore conclue
+-- date_retour rempli = adoption qui n'a pas abouti, le chat est revenu
+-- Bao (18) apparaît deux fois, avec deux personnes différentes.
 -- -------------------------------------------------------------
-INSERT INTO cats (nom, date_arrivee, date_depart, date_naissance, race, sexe, customer_id, date_adoption) VALUES
-('Mochi',     '2025-02-10', NULL,         '2022-05-14', 'Européen',            'F', NULL, NULL),        -- 1
-('Pixel',     '2025-04-03', NULL,         '2023-08-01', 'Bengal',              'M', NULL, NULL),        -- 2
-('Tofu',      '2025-05-20', NULL,         '2021-03-22', 'Ragdoll',             'M', NULL, NULL),        -- 3
-('Miso',      '2025-07-11', NULL,         '2024-01-09', 'Européen',            'F', NULL, NULL),        -- 4
-('Biscotte',  '2025-08-30', NULL,         '2019-11-30', 'Chartreux',           'F', NULL, NULL),        -- 5
-('Gribouille','2025-09-14', NULL,         '2023-02-17', 'Européen',            'M', NULL, NULL),        -- 6
-('Noisette',  '2025-10-02', NULL,         '2022-09-05', 'Sacré de Birmanie',   'F', NULL, NULL),        -- 7
-('Ficelle',   '2025-11-18', NULL,         '2024-04-12', 'Européen',            'F', NULL, NULL),        -- 8
-('Caramel',   '2025-12-01', NULL,         '2020-07-25', 'Maine Coon',          'M', NULL, NULL),        -- 9
-('Plume',     '2026-01-07', NULL,         '2023-12-03', 'Siamois',             'F', NULL, NULL),        -- 10
-('Sushi',     '2026-01-22', NULL,         NULL,         'Inconnu',             'M', NULL, NULL),        -- 11
-('Réglisse',  '2026-02-15', NULL,         '2018-10-10', 'Européen',            'M', NULL, NULL),        -- 12
-('Praline',   '2026-03-03', NULL,         '2025-01-20', 'British Shorthair',   'F', NULL, NULL),        -- 13
-('Chaussette','2026-03-28', NULL,         '2022-02-28', 'Européen',            'M', NULL, NULL),        -- 14
-('Olive',     '2026-04-16', NULL,         '2024-09-09', 'Norvégien',           'F', NULL, NULL),        -- 15
-('Gaufre',    '2026-05-09', NULL,         '2025-03-02', 'Européen',            'M', NULL, NULL),        -- 16
-('Pistache',  '2026-06-21', NULL,         '2023-05-15', 'Persan',              'F', NULL, NULL),        -- 17
-('Bao',       '2025-06-01', '2026-09-12', '2021-12-01', 'Européen',            'M', NULL, '2026-09-12'),-- 18 : adopté, client déjà supprimé
-('Câline',    '2025-03-17', '2026-11-18', '2020-04-04', 'Sacré de Birmanie',   'F', 3,    '2026-11-18'),-- 19 : adoptée par le client 3
-('Filou',     '2025-10-25', '2026-11-19', '2024-02-14', 'Européen',            'M', 5,    '2026-11-19');-- 20 : adopté par le client 5
-
--- -------------------------------------------------------------
--- GERER — chaque chat a au moins un référent (cardinalité 1N)
--- Lucas : chats 1 à 10, Inès : chats 11 à 20,
--- Pomme suit en plus les cas particuliers (âgés, timides, adoptions)
--- -------------------------------------------------------------
-INSERT INTO gerer (staff_id, cat_id) VALUES
-(2, 1), (2, 2), (2, 3), (2, 4), (2, 5), (2, 6), (2, 7), (2, 8), (2, 9), (2, 10),
-(3, 11), (3, 12), (3, 13), (3, 14), (3, 15), (3, 16), (3, 17), (3, 18), (3, 19), (3, 20),
-(1, 5), (1, 12), (1, 19), (1, 20);
+INSERT INTO cats_customers (cat_id, customer_id, date_rencontre, date_adoption, date_retour) VALUES
+(18, 4, '2026-05-20', '2026-06-10', '2026-07-02'),  -- Bao adopté par Paul Rousseau, puis rendu
+(19, 3, '2026-10-04', '2026-11-18', NULL),          -- Câline adoptée par Linh Nguyen
+(20, 5, '2026-10-21', '2026-11-19', NULL),          -- Filou adopté par Yasmine Benali
+(18, 8, '2026-11-22', NULL,         NULL);          -- Bao rencontré par Sacha Perrin
 
 COMMIT;
