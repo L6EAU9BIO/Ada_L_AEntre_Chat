@@ -33,15 +33,15 @@ INSERT INTO rooms (nom, nbr_places, acces_pmr, description) VALUES
 -- -------------------------------------------------------------
 -- CUSTOMERS (id 1 à 8)
 -- -------------------------------------------------------------
-INSERT INTO customers (nom, prenom, num_tel, role, mail, date_arrivee, date_adoption) VALUES
-('Dupuis',   'Claire',  '06 00 00 02 01', 'client',   'claire.dupuis@exemple.fr',  '2026-11-16', NULL),         -- 1
-('Lefebvre', 'Hugo',    '06 00 00 02 02', 'client',   'hugo.lefebvre@exemple.fr',  '2026-11-17', NULL),         -- 2
-('Nguyen',   'Linh',    '06 00 00 02 03', 'adoptant', 'linh.nguyen@exemple.fr',    '2026-10-04', '2026-11-18'), -- 3
-('Rousseau', 'Paul',    '06 00 00 02 04', 'adoptant', 'paul.rousseau@exemple.fr',  '2026-05-20', '2026-06-10'), -- 4 : a rendu Bao
-('Benali',   'Yasmine', '06 00 00 02 05', 'adoptant', 'yasmine.benali@exemple.fr', '2026-10-21', '2026-11-19'), -- 5
-('Fontaine', 'Jeanne',  '06 00 00 02 06', 'client',   'jeanne.fontaine@exemple.fr','2026-11-21', NULL),         -- 6
-('Le Goff',  'Erwan',   '06 00 00 02 07', 'client',   NULL,                         '2026-11-21', NULL),         -- 7
-('Perrin',   'Sacha',   '06 00 00 02 08', 'adoptant', 'sacha.perrin@exemple.fr',   '2026-11-22', NULL);         -- 8 : rencontre, adoption pas encore faite
+INSERT INTO customers (nom, prenom, num_tel, role, mail, date_arrivee) VALUES
+('Dupuis',   'Claire',  '06 00 00 02 01', 'client',   'claire.dupuis@exemple.fr',   '2026-11-16'), -- 1
+('Lefebvre', 'Hugo',    '06 00 00 02 02', 'client',   'hugo.lefebvre@exemple.fr',   '2026-11-17'), -- 2
+('Nguyen',   'Linh',    '06 00 00 02 03', 'adoptant', 'linh.nguyen@exemple.fr',     '2026-10-04'), -- 3
+('Rousseau', 'Paul',    '06 00 00 02 04', 'adoptant', 'paul.rousseau@exemple.fr',   '2026-05-20'), -- 4 : a rendu Bao
+('Benali',   'Yasmine', '06 00 00 02 05', 'adoptant', 'yasmine.benali@exemple.fr',  '2026-10-21'), -- 5
+('Fontaine', 'Jeanne',  '06 00 00 02 06', 'client',   'jeanne.fontaine@exemple.fr', '2026-11-21'), -- 6
+('Le Goff',  'Erwan',   '06 00 00 02 07', 'client',   NULL,                          '2026-11-21'), -- 7
+('Perrin',   'Sacha',   '06 00 00 02 08', 'adoptant', 'sacha.perrin@exemple.fr',    '2026-11-22'); -- 8 : rencontre, adoption pas encore faite
 
 -- -------------------------------------------------------------
 -- CATS (id 1 à 20)

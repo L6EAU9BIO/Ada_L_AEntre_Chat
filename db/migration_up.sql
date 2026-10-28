@@ -35,16 +35,16 @@ CREATE TABLE rooms (
 
 -- -------------------------------------------------------------
 -- CUSTOMERS : clients, visiteurs et adoptants
+-- (les dates d'adoption sont dans cats_customers)
 -- -------------------------------------------------------------
 CREATE TABLE customers (
-    id            INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    nom           TEXT NOT NULL,
-    prenom        TEXT NOT NULL,
-    num_tel       TEXT NOT NULL,
-    role          TEXT NOT NULL DEFAULT 'client',
-    mail          TEXT UNIQUE,
-    date_arrivee  DATE NOT NULL DEFAULT CURRENT_DATE,
-    date_adoption DATE
+    id           INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    nom          TEXT NOT NULL,
+    prenom       TEXT NOT NULL,
+    num_tel      TEXT NOT NULL,
+    role         TEXT NOT NULL DEFAULT 'client',
+    mail         TEXT UNIQUE,
+    date_arrivee DATE NOT NULL DEFAULT CURRENT_DATE
 );
 
 -- -------------------------------------------------------------
