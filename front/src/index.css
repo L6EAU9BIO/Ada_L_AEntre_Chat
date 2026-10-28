@@ -1,0 +1,21 @@
+*{
+    padding: 0;
+    margin: 0;
+}
+
+:root {
+    --orange: #E29C51;
+    --beige: #ebdfce;
+    --marron: #5C4235;
+    --marron-sombre: #271813;
+    --gris: #9b9691;
+    --kaki: #837966;
+
+
+}
+
+@font-face{
+    font-family: "Fat Kat";
+    src: url("./assets/fonts/fat-kat.ttf") format("truetype");
+    font-display: swap;
+}

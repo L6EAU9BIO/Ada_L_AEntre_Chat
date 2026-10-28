@@ -1,0 +1,21 @@
+.header {
+    background-color: var(--marron);
+    display: flex;
+}
+
+.l-aentre-chats {
+    font-family: "Fat Kat", sans-serif;
+    color: var(--beige);
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+.l-aentre-chats span {
+    display: block;
+}
+
+.logo-l-aentre-chat {
+    width:  8rem;
+    height: 8rem;
+    padding: 0.5rem;
+}
