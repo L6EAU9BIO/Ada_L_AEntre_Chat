@@ -1,37 +1,17 @@
 -- =============================================================
 -- L'Æntre Chat — migration UP
--- Crée toutes les tables de la base lovelacefactory.
--- Ordre : d'abord les tables "fortes" (sans clé étrangère),
--- puis celles qui pointent vers elles.
+-- Crée toutes les tables à partir du MLD.
+-- Ordre : d'abord les tables sans clé étrangère (staffs, rooms,
+-- customers, cats), puis celles qui pointent vers elles.
 -- =============================================================
 
 BEGIN;
 
 -- -------------------------------------------------------------
--- CUSTOMER : clients, conservés le temps de leur réservation
+-- STAFFS : la gérante et les employés
 -- -------------------------------------------------------------
-CREATE TABLE customer (
-    customer_id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    nom         TEXT NOT NULL,
-    num_tel     TEXT NOT NULL
-);
-
--- -------------------------------------------------------------
--- ROOM : les salles du bar (Salon, L'Étage, Cocon)
--- -------------------------------------------------------------
-CREATE TABLE room (
-    room_id     INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    nom         TEXT NOT NULL UNIQUE,
-    nbr_place   INTEGER NOT NULL CHECK (nbr_place > 0),
-    acces_pmr   BOOLEAN NOT NULL DEFAULT false,
-    description TEXT
-);
-
--- -------------------------------------------------------------
--- STAFF : la gérante et les employés
--- -------------------------------------------------------------
-CREATE TABLE staff (
-    staff_id     INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+CREATE TABLE staffs (
+    id           INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     nom          TEXT NOT NULL,
     prenom       TEXT NOT NULL,
     num_tel      TEXT NOT NULL,
@@ -43,74 +23,111 @@ CREATE TABLE staff (
 );
 
 -- -------------------------------------------------------------
+-- ROOMS : les salles du bar (Salon, L'Étage, Cocon)
+-- -------------------------------------------------------------
+CREATE TABLE rooms (
+    id          INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    nom         TEXT NOT NULL UNIQUE,
+    nbr_places  INTEGER NOT NULL CHECK (nbr_places > 0),
+    acces_pmr   BOOLEAN NOT NULL DEFAULT false,
+    description TEXT
+);
+
+-- -------------------------------------------------------------
+-- CUSTOMERS : clients, visiteurs et adoptants
+-- -------------------------------------------------------------
+CREATE TABLE customers (
+    id            INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    nom           TEXT NOT NULL,
+    prenom        TEXT NOT NULL,
+    num_tel       TEXT NOT NULL,
+    role          TEXT NOT NULL DEFAULT 'client',
+    mail          TEXT UNIQUE,
+    date_arrivee  DATE NOT NULL DEFAULT CURRENT_DATE,
+    date_adoption DATE
+);
+
+-- -------------------------------------------------------------
 -- CATS : les pensionnaires
--- Adopter (0N CUSTOMER, 01 CATS) → la clé étrangère va dans cats :
--- un chat a 0 ou 1 adoptant, un client peut adopter plusieurs chats.
 -- -------------------------------------------------------------
 CREATE TABLE cats (
-    cat_id         INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    id             INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     nom            TEXT NOT NULL,
     date_arrivee   DATE NOT NULL DEFAULT CURRENT_DATE,
     date_depart    DATE,
     date_naissance DATE,
     race           TEXT NOT NULL DEFAULT 'Inconnu',
     sexe           CHAR(1) NOT NULL CHECK (sexe IN ('M', 'F')),
-    customer_id    INTEGER REFERENCES customer (customer_id) ON DELETE SET NULL,
-    date_adoption  DATE,
     CHECK (date_depart IS NULL OR date_depart >= date_arrivee),
     CHECK (date_naissance IS NULL OR date_naissance <= date_arrivee)
 );
 
 -- -------------------------------------------------------------
--- RESERVER_CUSTOMER : réservation d'une salle par un client
--- customer_id UNIQUE → un client = une seule réservation
--- room_id non unique → une salle peut avoir plusieurs réservations
+-- RESERVATIONS
+-- LOCALISER (1,1)  → room_id obligatoire (NOT NULL)
+-- RESERVER  (0,1)  → staff_id et customer_id facultatifs,
+--                     mais il en faut au moins un : une réservation
+--                     est faite soit par un client, soit par l'équipe.
 -- -------------------------------------------------------------
-CREATE TABLE reserver_customer (
-    reservation_id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    customer_id    INTEGER NOT NULL UNIQUE
-                   REFERENCES customer (customer_id) ON DELETE CASCADE,
-    room_id        INTEGER NOT NULL
-                   REFERENCES room (room_id) ON DELETE RESTRICT,
-    date_resa      DATE NOT NULL,
-    heure_debut    TIME NOT NULL,
-    heure_fin      TIME NOT NULL,
-    nb_personnes   INTEGER NOT NULL CHECK (nb_personnes > 0),
-    CHECK (heure_fin > heure_debut)
+CREATE TABLE reservations (
+    id                 INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    date_reservation   TIMESTAMP NOT NULL,
+    places_reservation INTEGER NOT NULL CHECK (places_reservation > 0),
+    customer_id        INTEGER REFERENCES customers (id) ON DELETE CASCADE,
+    staff_id           INTEGER REFERENCES staffs (id) ON DELETE CASCADE,
+    room_id            INTEGER NOT NULL REFERENCES rooms (id) ON DELETE RESTRICT,
+    CHECK (customer_id IS NOT NULL OR staff_id IS NOT NULL)
 );
 
 -- -------------------------------------------------------------
--- RESERVER_STAFF : un membre du staff bloque une salle
--- (privatisation, ménage, atelier…) — 0N STAFF, 0N ROOM
+-- INTERVENTIONS : soins, visites véto, suivi d'un chat
+-- GERER   (1,1) → staff_id obligatoire
+-- ASSISTER(1,1) → cat_id obligatoire
+-- On garde l'historique : un staff parti n'est pas supprimé
+-- (il a une date_depart), d'où RESTRICT.
 -- -------------------------------------------------------------
-CREATE TABLE reserver_staff (
-    reservation_staff_id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    staff_id             INTEGER NOT NULL
-                         REFERENCES staff (staff_id) ON DELETE CASCADE,
-    room_id              INTEGER NOT NULL
-                         REFERENCES room (room_id) ON DELETE CASCADE,
-    date_resa            DATE NOT NULL,
-    heure_debut          TIME NOT NULL,
-    heure_fin            TIME NOT NULL,
-    motif                TEXT,
-    CHECK (heure_fin > heure_debut)
+CREATE TABLE interventions (
+    id                INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    date_intervention DATE NOT NULL DEFAULT CURRENT_DATE,
+    motif             TEXT NOT NULL,
+    resultat          TEXT,
+    cat_id            INTEGER NOT NULL REFERENCES cats (id) ON DELETE CASCADE,
+    staff_id          INTEGER NOT NULL REFERENCES staffs (id) ON DELETE RESTRICT
 );
 
 -- -------------------------------------------------------------
--- GERER : quel membre du staff s'occupe de quel chat
--- 1N CATS, 0N STAFF → table de liaison, clé primaire composée
+-- CATS_CUSTOMERS : rencontre, adoption, éventuel retour
+-- Un chat peut apparaître plusieurs fois (adoption qui n'a pas
+-- abouti → date_retour), mais jamais deux fois avec la même
+-- personne : c'est la clé primaire (cat_id, customer_id).
+-- Un client peut adopter plusieurs chats.
 -- -------------------------------------------------------------
-CREATE TABLE gerer (
-    staff_id INTEGER NOT NULL REFERENCES staff (staff_id) ON DELETE CASCADE,
-    cat_id   INTEGER NOT NULL REFERENCES cats (cat_id) ON DELETE CASCADE,
-    PRIMARY KEY (staff_id, cat_id)
+CREATE TABLE cats_customers (
+    cat_id         INTEGER NOT NULL REFERENCES cats (id) ON DELETE CASCADE,
+    customer_id    INTEGER NOT NULL REFERENCES customers (id) ON DELETE CASCADE,
+    date_rencontre DATE NOT NULL DEFAULT CURRENT_DATE,
+    date_adoption  DATE,
+    date_retour    DATE,
+    PRIMARY KEY (cat_id, customer_id),
+    CHECK (date_adoption IS NULL OR date_adoption >= date_rencontre),
+    -- pas de retour sans adoption, et pas de retour avant l'adoption
+    CHECK (date_retour IS NULL
+           OR (date_adoption IS NOT NULL AND date_retour >= date_adoption))
 );
+
+-- Un chat ne peut avoir qu'une seule adoption EN COURS à la fois
+-- (adopté et pas encore revenu). Les adoptions terminées par un
+-- retour ne comptent pas.
+CREATE UNIQUE INDEX uniq_cats_customers_adoption_en_cours
+    ON cats_customers (cat_id)
+    WHERE date_adoption IS NOT NULL AND date_retour IS NULL;
 
 -- Index sur les clés étrangères (PostgreSQL ne les crée pas tout seul)
-CREATE INDEX idx_cats_customer           ON cats (customer_id);
-CREATE INDEX idx_reserver_customer_room  ON reserver_customer (room_id, date_resa);
-CREATE INDEX idx_reserver_staff_room     ON reserver_staff (room_id, date_resa);
-CREATE INDEX idx_reserver_staff_staff    ON reserver_staff (staff_id);
-CREATE INDEX idx_gerer_cat               ON gerer (cat_id);
+CREATE INDEX idx_reservations_room_date ON reservations (room_id, date_reservation);
+CREATE INDEX idx_reservations_customer  ON reservations (customer_id);
+CREATE INDEX idx_reservations_staff     ON reservations (staff_id);
+CREATE INDEX idx_interventions_cat      ON interventions (cat_id);
+CREATE INDEX idx_interventions_staff    ON interventions (staff_id);
+CREATE INDEX idx_cats_customers_cust    ON cats_customers (customer_id);
 
 COMMIT;
