@@ -4,12 +4,12 @@ import express from "express";
 import cors from "cors";
 import healthRoutes from "../routes/healthRoutes.js";
 import { testConnexionDemarrage } from "../services/DbService.js";
-import routerAdmin from "..routes/admin.js"
-import routerChat from "..routes/chat.js"
-import routerClient from "..routes/client.js"
-import routerReservation from "..routes/reservation.js"
-import routerStaff from "..routes/staff.js"
-import routerTask from "..routes/task.js"
+import routerAdmin from "../routes/admin.js"
+import routerChat from "../routes/chat.js"
+import routerClient from "../routes/client.js"
+import routerReservation from "../routes/reservation.js"
+import routerStaff from "../routes/staff.js"
+import routerTask from "../routes/task.js"
 
 // MIDDLEWARES
 const app = express();
