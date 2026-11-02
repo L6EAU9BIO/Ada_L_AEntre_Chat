@@ -1,6 +1,6 @@
 import * as adminService from "../services/adminService.js"
 
-export async function verifierAdmin(req, res) {
+export async function verifAdmin(req, res) {
     try{
         const resultat = await adminService.adminConnexion()
         res.json(resultat)

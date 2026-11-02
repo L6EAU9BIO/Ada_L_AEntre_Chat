@@ -1,5 +1,5 @@
 import { Router } from "express"
-import {} from "../controllers/adminController.js"
+import { verifAdmin } from "../controllers/adminController.js"
 
 const routerAdmin = Router();
 

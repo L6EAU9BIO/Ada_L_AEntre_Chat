@@ -7,9 +7,9 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - lovelacefactory_data:/var/lib/postgresql
+      - aentre_chats_data:/var/lib/postgresql
       - ./migration_up.sql:/docker-entrypoint-initdb.d/01_migration_up.sql
       - ./seed.sql:/docker-entrypoint-initdb.d/02_seed.sql
 
 volumes:
-  lovelacefactory_data:
+  aentre_chats_data:

@@ -4,7 +4,7 @@
 import DbModel from "../models/DbModel.js"
 
 export async function verifierConnexion() {
-    const connect = await DbModel.getHeureServeur()
+    const connect = await DbModel.verifierConnexion()
 
     // Regle : si l abase ne répond rien, on considere la connextion comme null
     if (!connect) {
