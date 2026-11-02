@@ -1,5 +1,7 @@
-import express from "express"
-import { Pool } from "../server/db.js"
+import { Router } from "express"
+
 
 const routerChat = Router()
 
+
+export default routerChat

@@ -1,6 +1,5 @@
-import express from "express"
-import { Pool } from "../server/db.js"
-import {} from "../controllers/"
+import { Router } from "express"
+import {} from "../controllers/adminController.js"
 
 const routerAdmin = Router();
 
