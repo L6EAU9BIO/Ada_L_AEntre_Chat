@@ -1,4 +1,4 @@
-import { pool } from "../server/db"
+import { pool } from "../server/db.js"
 
 async function verifAdmin() {
     const result = await pool.query()

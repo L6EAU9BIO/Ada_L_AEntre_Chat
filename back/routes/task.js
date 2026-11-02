@@ -1,5 +1,5 @@
-import express from "express"
-import { Pool } from "../server/db.js"
+import { Router } from "express"
 
 const routerTask = Router()
 
+export default routerTask
