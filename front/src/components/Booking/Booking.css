@@ -1,0 +1,22 @@
+.booking_button_section{
+    display: flex;
+    justify-content: space-around;
+}
+
+.booking_button_section button{
+    color: var(--beige);
+    padding: 0.5rem;
+    margin: 0.5rem;
+    border-width: 0;
+    flex: 1 1 0;
+} 
+
+.booking_button_reservation {
+      background-color: var(--kaki-marron);
+      border-radius: 2rem;
+}
+
+.booking_button_consulter {
+      background-color: var(--vert-pastel);
+      border-radius: 2rem;
+}
