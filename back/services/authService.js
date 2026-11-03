@@ -1,6 +1,6 @@
 import bcryct from 'bcryptjs'
 import jwt from 'jsonwebtoken'
-import * as loginModel from '../models/loginModel.js'
+import * as loginModel from '../models/authModel.js'
 import { ErreurHttp  } from '../server/erreurs.js';
 
 const COUT_HASH = 10;

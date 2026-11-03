@@ -1,4 +1,4 @@
-import * as loginService from "../services/loginService.js"
+import * as loginService from "../services/authService.js"
 
 // Validation : valider les champs ( retourne un objet d'erreur vide si tout est OK)
 const EMAIL_REGEX =
