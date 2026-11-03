@@ -14,7 +14,7 @@ export async function trouverParEmail(email) {
 
 export async function creat({ prenom, nom, email, tel, motDePasseHash}) {
     const { rows } = await pool.query(
-        `INSERT INTO customers (prenom, nom, email, num_tel, mot_de_passe_hash)
+        `INSERT INTO customers (prenom, nom, mail, num_tel, mot_de_passe_hash)
         VALUES ($1, $2, $3, $4, $5)
         RETURNING ${COLONNES_PUBLIQUES}`, 
         [prenom, nom, email, tel, motDePasseHash]
