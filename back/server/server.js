@@ -10,7 +10,7 @@ import routerClient from "../routes/client.js"
 import routerReservation from "../routes/reservation.js"
 import routerStaff from "../routes/staff.js"
 import routerTask from "../routes/task.js"
-import routerLogin from "../routes/login.js"
+import routerAuth from "../routes/auth.js"
 import { errorHandler } from "../middlewares/errorHandler.js";
 
 // MIDDLEWARES
@@ -24,7 +24,7 @@ app.use((req, res, next) => {
 });
 // ROUTES
 
-app.use("/api/inscription", routerLogin)
+app.use("/api/auth", routerAuth);
 app.use("/api/admin", routerAdmin);
 app.use("/api/chat", routerChat);
 app.use("/api/client", routerClient);
