@@ -2,7 +2,7 @@ import { pool } from '../server/db.js'
 
 
 // Les colonnes qu'on peut renvoyer au front : jamais le hash
-const COLONNES_PUBLIQUES = 'id, prenom, mail as email, role, date_inscription';
+const COLONNES_PUBLIQUES = 'id, nom, prenom, mail as email, num_tel as tel, role, date_arrivee';
 
 export async function trouverParEmail(email) {
     const { rows } = await pool.query(
