@@ -6,7 +6,7 @@ export async function getReservation(req, res, next) {
     try {
         const reserv = await reservationService.getAllReserv()
         return res.status(200).json(reserv)
-    } catch(err) {
+    } catch(error) {
         return next(error)
     }
 }
@@ -30,8 +30,8 @@ export async function creatReservation(req, res, next){
     try{
         const reservs = await reservationService.creatReservation(req.body)
         return res.status(201).json(reservs)
-    }catch (err){
-        return next(err)
+    }catch (error){
+        return next(error)
     }
 }
 
