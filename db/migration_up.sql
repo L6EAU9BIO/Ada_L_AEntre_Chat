@@ -48,7 +48,7 @@ CREATE TABLE customers (
     mail         TEXT UNIQUE,
     date_arrivee DATE NOT NULL DEFAULT CURRENT_DATE
 );
-
+ALTER TABLE customers ADD COLUMN mot_de_passe_hash TEXT;
 -- -------------------------------------------------------------
 -- CATS : les pensionnaires
 -- -------------------------------------------------------------
