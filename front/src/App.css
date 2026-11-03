@@ -1,0 +1,7 @@
+.page {
+    display:flex;
+}
+
+.contenu{
+    flex: 1;
+}

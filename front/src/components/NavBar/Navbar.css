@@ -1,0 +1,38 @@
+.navbar-section{
+    background-color: var(--gris);
+    flex-direction: column;
+    min-height: 100vh;
+    width: 20%;
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    min-width: 13rem;
+}
+
+.navbar-section button {
+    display: flex;
+    align-items: center;
+    border-radius: 1rem; 
+    border: none;
+    background-color: var(--orange);
+    color: var(--beige);
+    padding: 0.5rem ;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+.reservation-icon {
+    height: 5rem;
+}
+.nos-chats-icon {
+    height: 5rem;
+}
+.menu-icon {
+    height: 5rem;
+}
+.adoption-icon {
+    height: 5em;
+}
+.planning-icon {
+    height: 5rem;
+}
