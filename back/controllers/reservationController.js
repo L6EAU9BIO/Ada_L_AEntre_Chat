@@ -4,7 +4,7 @@ import * as reservationService from "../services/reservationService.js"
 // Route GET :  Permet d'avoir toutes les reservations -
 export async function getReservation(req, res, next) {
     try {
-        const reserv = await reservationService.getAllReserv()
+        const reserv = await reservationService.getAllReserv(req.query.room_id , req.query.date)
         return res.status(200).json(reserv)
     } catch(error) {
         return next(error)
