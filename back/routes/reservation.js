@@ -3,10 +3,10 @@ import * as reservationController from "../controllers/reservationController.js"
 
 const routerReservation = Router()
 
-routerReservation.get("/api", reservationController.getReservation)
-routerReservation.get("/api/:id", reservationController.getReservationById)
-routerReservation.post("/api", reservationController.creatReservation)
-routerReservation.put("/api/:id", reservationController.updateReservation)
-routerReservation.delete("/api/:id", reservationController.deleteReservation)
+routerReservation.get("/", reservationController.getReservation)
+routerReservation.get("/:id", reservationController.getReservationById)
+routerReservation.post("/", reservationController.creatReservation)
+routerReservation.put("/:id", reservationController.updateReservation)
+routerReservation.delete("/:id", reservationController.deleteReservation)
 
 export default routerReservation;

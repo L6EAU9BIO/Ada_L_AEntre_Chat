@@ -34,8 +34,10 @@ app.use("/api", healthRoutes);
 
 // MIDDLEWARE ERREUR (après les routes)
 app.use((err, req, res, next) => {
+  const status = err.status ?? 500
+  const message = status === 500 ? "Une erreur est survenue" : err.message
   console.error("[erreur]", err.message);
-  return res.status(500).json({ erreur: "Une erreur est survenue" });
+  return res.status(status).json({erreur : message});
 });
 
 // DÉMARRAGE
