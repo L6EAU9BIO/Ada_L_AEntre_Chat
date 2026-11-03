@@ -1,11 +1,29 @@
 import { pool } from '../server/db.js'
 
-export async function findAll(){
+export async function findByRoomAndDate(room_id , date_reservation){
+    const { rows } = await pool.query(
+        `SELECT *, 
+                CASE WHEN customer_id IS NOT NULL THEN 'client'
+                ELSE 'staff'
+                END AS reserve_par
+        FROM reservations
+        WHERE room_id = $1
+            AND date_reservation::date = $2
+            ORDER BY date_reservation`, [room_id, date_reservation]
+    ) 
+    return rows
     // requete pour recuperer toute les reservation
 }
 
-export async function findById(){
+export async function findById(id){
     // requete pour recuperer une reservation
+    const { rows } = await pool.query(
+        `SELECT date_reservation, places_reservation, room_id, customer_id, staff_id
+        FROM reservations
+        WHERE id = $1` , [id]
+        
+    )
+    return rows [0]
 }
 
 export async function creat(data) {

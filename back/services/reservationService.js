@@ -7,8 +7,10 @@ function erreur400(message){
     return error
 }
 
-export async function getAllReserv() {
-    return reservationModel.findAll()
+export async function getAllReserv(room_id, date_reservation) {
+    if(!room_id) throw erreur400("Le choix de la salle est obligatoire")
+    if(!date_reservation) throw erreur400("Le choix de la date est obligatoire")
+    return reservationModel.findByRoomAndDate(room_id, date_reservation)
 }
 
 export async function getReservationById(id) {
