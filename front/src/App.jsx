@@ -3,6 +3,7 @@ import './App.css'
 import { Routes, Route, Navigate} from "react-router";
 import Header from './components/Header/Header.jsx';
 import Booking from './components/Booking/Booking.jsx';
+import Navbar from './components/NavBar/Navbar.jsx';
 
 function App() {
   // const [count, setCount] = useState(0)
@@ -11,10 +12,15 @@ function App() {
     <>
       {/* Will help to use our page as a single page */}
       <Header/>
-      <Routes>
-        {/* Place to fill when the code will be more advanced */}
-        <Route path="/" element={<Booking/>}/>
-      </Routes>
+      <div className='page'>
+          <Navbar/>
+          <main className='contenu'>       
+              <Routes>
+                {/* Place to fill when the code will be more advanced */}
+                <Route path="/" element={<Booking/>}/>
+              </Routes>
+          </main>
+      </div>
     </>
   )
 }
