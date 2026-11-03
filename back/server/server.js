@@ -40,8 +40,10 @@ app.get("/", async (req, res) => {
 
 // MIDDLEWARE ERREUR (après les routes)
 app.use((err, req, res, next) => {
-  console.error("[erreur]", err.stack || err.message);
-  res.status(err.status || 500).json({ erreur: "Une erreur est survenue" });
+  const status = err.status ?? 500
+  const message = status === 500 ? "Une erreur est survenue" : err.message
+  console.error("[erreur]", err.message);
+  return res.status(status).json({erreur : message});
 });
 
 // DÉMARRAGE
