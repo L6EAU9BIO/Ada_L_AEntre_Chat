@@ -1,6 +1,6 @@
-import { pool } from "../"
+import * as chatModel from "../models/chatModel.js"
 
-const COLLONES_AUTORISEES = [nom, date_arrivee, date_depart, date_naissance, race, sexe]
+
 
 // Verifie que l'ID est valide 
 function erreur(message, status){
@@ -11,7 +11,7 @@ function erreur(message, status){
 // Verifier que l'ID est un entier , sinon erreur 400
 function verifierId(id) {
     const numId = Number(id)
-    if (!Nummber.isInteger(numId) || numId <= 0) {
+    if (!Number.isInteger(numId) || numId <= 0) {
         throw erreur("ID invalide", 400)
     }
     return numId
@@ -24,7 +24,7 @@ export async function getAllCat() {
 
 
 // Recupere un chat par son id (null si inc=trouvable)
-export async function creatChat(id) {
+export async function getChatById(id) {
     return chatModel.findById(verifierId(id))
 }
 
@@ -35,21 +35,21 @@ export async function creatChat(data) {
     if (!data.date_arrivee) {
         throw erreur("La date d'arrivé est obligatoire", 400)
     }
-    if(!date_naissance) {
+    if(!data.date_naissance) {
         throw erreur("Veuiller rentrer une date de naissance", 400)
     }
-    if(!race) {
+    if(!data.race) {
         throw erreur("Veuiller saisir la race du chat", 400)
     }
-    if(!sexe){
+    if(!data.sexe){
         throw erreur("Le sexe de l'animal est obligatoire", 400)
     }
-    return chatModel.creat(data)
+    return chatModel.insert(data)
 }
 
-export async function updateChat(id, data){
-    return chatModel.remove(id)
-}
+// export async function updateChat(id, data){
+//     return chatModel.remove(id)
+// }
  
    
 

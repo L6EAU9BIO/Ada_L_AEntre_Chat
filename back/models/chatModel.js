@@ -1,6 +1,6 @@
-import { pool } from "../server/db"
+import { pool } from "../server/db.js"
 
-const COLLONES_AUTORISEES = [nom, date_arrivee, date_depart, date_naissance, race, sexe]
+const COLLONES_AUTORISEES = ["nom", "date_arrivee", "date_depart", "date_naissance", "race", "sexe"]
 
 // SELECT de tous les chats
 export async function findAll() {
@@ -12,7 +12,8 @@ export async function findAll() {
 // SELECT d'un chat par id (undefined si introuvable)
 export async function findById(id) {
     const { rows } = await pool.query(
-        `SELECT * FROM cats WHERE id = $1, [id]`
+        `SELECT * FROM cats WHERE id = $1`
+        ,[id]
     )
         return rows[0] || null
 }
@@ -21,7 +22,7 @@ export async function findById(id) {
 export async function insert({nom, date_arrivee, date_depart, date_naissance, race, sexe}){
     const { rows } = await pool.query(
         `INSERT INTO cats (nom, date_arrivee, date_depart, date_naissance, race, sexe) VALUES ($1, $2, $3, $4, $5, $6) RETURNING * `,
-        [nom, date_arrivee, date_depart ?? null, date_naissance ?? null, race ?? null, sexe]
+        [nom, date_arrivee, date_depart ?? null, date_naissance ?? null, race, sexe]
     )
     return rows[0]
 }
