@@ -50,7 +50,7 @@ export async function creatChat(data) {
 // * update 
 export async function updateChat(id, data){
     const numId = verifierId(id)
-    if(!Object.keys(data ?? {}).length === 0) {
+    if(Object.keys(data ?? {}).length === 0) {
         throw erreur("Aucun champs a modifier", 400)
     }
     return chatModel.update(numId, data)
