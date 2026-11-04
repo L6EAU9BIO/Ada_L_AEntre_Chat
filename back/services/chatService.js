@@ -47,10 +47,24 @@ export async function creatChat(data) {
     return chatModel.insert(data)
 }
 
-// export async function updateChat(id, data){
-//     return chatModel.remove(id)
-// }
- 
-   
+// * update 
+export async function updateChat(id, data){
+    if(!verifierId(id)) {
+        throw erreur("Aucun chat trouvé pour cet ID", 400)
+    }
+    if(!data) {
+        throw erreur("Aucun champs a modifier", 400)
+    }
+    return chatModel.update(id)
+}
+
+
+// * delete
+export async function deleteChat(id){
+    if(!verifierId(id)) {
+        throw erreur("Aucun chat trouvé pour cet ID", 400)
+    }
+    return chatModel.remove(id)
+}
 
 
