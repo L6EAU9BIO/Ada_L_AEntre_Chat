@@ -55,9 +55,9 @@ export async function updateReservation(id, data){
 
 export async function remove(id){
     // requete pour supprimer une reservation
-    const { rows } = await pool.query(
+    const { rowCount } = await pool.query(
         `DELETE FROM reservations WHERE id = $1`,
         [id]
     )
-    return rows > 0
+    return rowCount > 0
 }
