@@ -19,7 +19,7 @@ function verifierId(id) {
 
 // Recupere tous les chats 
 export async function getAllCat() {
-    return chatModel.finAll()
+    return chatModel.findAll()
 }
 
 
