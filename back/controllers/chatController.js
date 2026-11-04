@@ -50,14 +50,14 @@ export async function updateChat(req, res, next){
 }
 
 // Route DELETE : permet de supprimer un chat
-// export async function deleteChat(req, res, next){
-//     try{
-//         const delCat = await chatService.deleteChat(req.params.id)
-//         if(!delCat){
-//             return res.status(404).json({ message: "félin introuvable"})
-//         } 
-//         return res.status(204).send()
-//     }catch (error) {
-//         return next(error)
-//     }
-// }
+export async function deleteChat(req, res, next){
+    try{
+        const delCat = await chatService.deleteChat(req.params.id)
+        if(!delCat){
+            return res.status(404).json({ message: "félin introuvable"})
+        } 
+        return res.status(204).send()
+    }catch (error) {
+        return next(error)
+    }
+}
