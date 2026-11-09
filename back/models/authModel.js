@@ -12,6 +12,15 @@ export async function trouverParEmail(email) {
     return rows[0] ?? null;
 }
 
+export async function trouverStaffParEmail(email){
+    const { rows } = await pool.query(
+        `SELECT id, nom, prenom, mail AS email, role, date_depart, mot_de_passe_hash
+        FROM staffs WHERE mail =$1`, 
+        [email]
+    )
+    return rows[0] ?? null
+}
+
 export async function creat({ prenom, nom, email, tel, motDePasseHash}) {
     const { rows } = await pool.query(
         `INSERT INTO customers (prenom, nom, mail, num_tel, mot_de_passe_hash)
