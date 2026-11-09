@@ -1,4 +1,5 @@
 import * as loginService from "../services/authService.js"
+import { ErrorHttp } from "../server/erreurs.js";
 
 // Validation : valider les champs ( retourne un objet d'erreur vide si tout est OK)
 const EMAIL_REGEX =
