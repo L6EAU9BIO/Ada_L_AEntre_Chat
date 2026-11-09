@@ -23,6 +23,7 @@ CREATE TABLE staffs (
     date_depart  DATE,
     CHECK (date_depart IS NULL OR date_depart >= date_arrivee)
 );
+ALTER TABLE staffs ADD COLUMN mot_de_passe_hash TEXT;
 
 -- -------------------------------------------------------------
 -- ROOMS : les salles du bar (Salon, L'Étage, Cocon)
