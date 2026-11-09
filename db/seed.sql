@@ -19,6 +19,10 @@ INSERT INTO staffs (nom, prenom, num_tel, role, mail, date_arrivee, date_depart)
 ('Garnier', 'Lucas', '06 00 00 01 02', 'employe', 'lucas@laentrechat.fr', '2025-06-15', NULL),
 ('Moreau',  'Inès',  '06 00 00 01 03', 'employe', 'ines@laentrechat.fr',  '2026-01-05', NULL);
 
+UPDATE staffs SET mot_de_passe_hash = '$2b$10$R6tuDoFfWU2BVcYGYiLFbeguLUnQC7jOmewEDKPcubSN.NPiMdjli' WHERE mail = 'pomme@laentrechat.fr';
+UPDATE staffs SET mot_de_passe_hash = '$2b$10$pFgMbwb4OHtWslJb2zI5CuMp9h5FMR6i6K2.N9p0IqkAFO.VUaiT.' WHERE mail = 'lucas@laentrechat.fr';
+UPDATE staffs SET mot_de_passe_hash = '$2b$10$CoOFFGv/VulUbDsDI09c/O.1Ex.H3qO7Wt9Haj4PtCrNel117m6h6' WHERE mail = 'ines@laentrechat.fr';
+
 -- -------------------------------------------------------------
 -- ROOMS (id 1 = Salon, 2 = L'Étage, 3 = Cocon)
 -- -------------------------------------------------------------

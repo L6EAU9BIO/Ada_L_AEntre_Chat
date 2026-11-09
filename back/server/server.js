@@ -11,17 +11,19 @@ import routerReservation from "../routes/reservation.js"
 import routerStaff from "../routes/staff.js"
 import routerTask from "../routes/task.js"
 import routerAuth from "../routes/auth.js"
-import { errorHandler } from "../middlewares/errorHandler.js";
+import { gestionErreurs } from "../middlewares/erreurs.js";
+import cookieParser from "cookie-parser";
 
 // MIDDLEWARES
 const app = express();
 app.use(express.json());
 app.use(cors());
-app.use(errorHandler);
+app.use(cookieParser());
 app.use((req, res, next) => {
   console.log("REQUÊTE :", req.method, req.originalUrl); // test de routes a enlever 
   next();
 });
+
 // ROUTES
 
 app.use("/api/auth", routerAuth);
@@ -34,17 +36,14 @@ app.use("/api/task", routerTask);
 // GET /api/health/db => healthRoutes => controller => service => model
 app.use("/api", healthRoutes);
 
+
 app.get("/", async (req, res) => {
   res.send("Connexion établie !")
 })
 
 // MIDDLEWARE ERREUR (après les routes)
-app.use((err, req, res, next) => {
-  const status = err.status ?? 500
-  const message = status === 500 ? "Une erreur est survenue" : err.message
-  console.error("[erreur]", err.stack || err.message);
-  return res.status(status).json({erreur : message});
-});
+app.use(gestionErreurs);
+
 
 // DÉMARRAGE
 app.listen(3000, () => {

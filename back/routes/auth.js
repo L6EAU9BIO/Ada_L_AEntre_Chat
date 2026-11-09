@@ -9,4 +9,6 @@ routerAuth.post("/inscription", authController.inscription)
 //   if (r.route) console.log("login.js route :", Object.keys(r.route.methods), r.route.path);
 // });
 
+routerAuth.post("/connexion", authController.connexion)
+
 export default routerAuth;
