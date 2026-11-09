@@ -42,7 +42,7 @@ jest.unstable_mockModule('../back/services/reservationService.js', () => ({
  
 // 2 - IMPORT DYNAMIQUE, après le mock
 const { getReservationController, getReservationByIdController } =
-  await import('../back/controllers/reservationControllers.js');
+  await import('../back/test/controllers/reservationControllers.js');
  
 // 3 - FAUSSE RESPONSE
 function createMockRes() {
