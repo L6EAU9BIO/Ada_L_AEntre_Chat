@@ -19,7 +19,7 @@ const { deleteReservation: deleteReservationController } = await import('../../c
 
 // Service : on récupere la réference au mock pour le configurer dans chaque test
 
-const { deleteReservationService } = await import('../../services/reservationService.js')
+const { deleteReservation: deleteReservationService } = await import('../../services/reservationService.js')
 
 // Mock res
 
