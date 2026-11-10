@@ -13,7 +13,7 @@ const CREATE_RESERVATION = {
 }
 
 // Mock des services : le mock sera configuré dans chaque test
-jest.unstable_mockModule('../service/reservationService.js', () => ({
+jest.unstable_mockModule('../../services/reservationService.js', () => ({
     getAllReserv: jest.fn(),
     getReservationById: jest.fn(),
     creatReservation: jest.fn(),
@@ -21,11 +21,11 @@ jest.unstable_mockModule('../service/reservationService.js', () => ({
 }))
 
 // import Apres le mock sinon le vrai reservationService.js est chargé
-const { creatReservationController } = await import('../controller/reservationControllers.js')
+const { creatReservation: creatReservationController } = await import('../../controllers/reservationController.js')
 
 // on récupere la référence au mock pour le configurer dans chaque test 
 
-const { creatReservationService } = await import('../service/reservationService.js')
+const { creatReservationService } = await import('../../services/reservationService.js')
 
 // 5. MOCK res
 

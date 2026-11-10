@@ -43,11 +43,11 @@ export async function creat(data) {
 export async function updateReservation(id, data){
     // requete pour modifier une reservation
     const champs = COLLONES_AUTORISEES.filter(c => data[c] !== undefined)
-    const setClose = champs.map((c, i) => `$${i + 1}`).join(", ")
-    const valeurs = champs.mat(c => data[c])
+    const setClose = champs.map((c, i) => `${c} = $${i + 1}`).join(", ")
+    const valeurs = champs.map(c => data[c])
 
     const { rows } = await pool.query(
-        `UPPDATE reservations ${setClose} WHERE id = $${champs.length + 1} RETURNING *`,
+        `UPDATE reservations SET ${setClose} WHERE id = $${champs.length + 1} RETURNING *`,
         [...valeurs, id]
     )
     return rows[0] || null
