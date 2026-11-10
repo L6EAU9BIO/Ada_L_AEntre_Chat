@@ -1,6 +1,6 @@
 // import { useState } from 'react'
 import './App.css'
-import { Routes, Route, Navigate} from "react-router";
+import { Routes, Route} from "react-router";
 import Header from './components/Header/Header.jsx';
 import Booking from './components/Booking/Booking.jsx';
 import Navbar from './components/NavBar/Navbar.jsx';
