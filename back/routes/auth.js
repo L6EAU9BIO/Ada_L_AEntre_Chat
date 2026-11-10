@@ -1,5 +1,6 @@
 import { Router } from "express"
 import * as authController from "../controllers/authController.js"
+import { verifyToken } from "../middlewares/verifyToken.js"
 
 
 const routerAuth = Router()
@@ -10,5 +11,7 @@ routerAuth.post("/inscription", authController.inscription)
 // });
 
 routerAuth.post("/connexion", authController.connexion)
+routerAuth.post("/deconnexion", authController.deconnexion)
+routerAuth.get("/moi",verifyToken, authController.moi)
 
 export default routerAuth;

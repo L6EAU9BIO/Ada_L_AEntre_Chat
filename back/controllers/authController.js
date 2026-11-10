@@ -38,6 +38,11 @@ export async function inscription(req, res, next) {
 }
 
 const DUREE_SESSION = 8 * 60 * 60 * 1000
+const OPTIONS_COOKIE = {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production"
+}
 
 export async function connexion(req,res, next) {
     try {
@@ -53,14 +58,20 @@ export async function connexion(req,res, next) {
         })
 
         res.cookie("token", token, {
-            httpOnly: true,
-            sameSite: "lax",
-            secure: process.env.NODE_ENV === "production",
+            ...OPTIONS_COOKIE,
             maxAge: DUREE_SESSION
         })
         res.json({ staff })
     } catch (error) {
         next(error)
-    }
-    
+    }    
+}
+
+export function deconnexion(req,res){
+    res.clearCookie("token", OPTIONS_COOKIE)
+    res.status(204).end()
+}
+
+export function moi(req,res){
+    res.json({utilisateur: req.utilisateur})
 }
