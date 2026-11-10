@@ -128,7 +128,7 @@ describe("Valider la création d'une reservation", () => {
     };
     const res = updateMockRes();
 
-    updateTaskService.mockResolvedValue(UPDATED_TASK);
+    creatReservationServiceService.mockResolvedValue(CREATE_RESERVATION);
 
     await creatReservationController(req, res);
 
