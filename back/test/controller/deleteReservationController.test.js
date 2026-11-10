@@ -78,7 +78,7 @@ describe('Valider que la reservation sont bien supprimées', () => {
   it("propage l'erreur du service", async () => {
     const req = { params: { id: 2 }, body: {} };
     const res = deleteMockRes();
-    deleteTaskService.mockRejectedValue(new Error('DB down'));
+    deleteReservationService.mockRejectedValue(new Error('DB down'));
     await expect(deleteReservationController(req, res)).rejects.toThrow('DB down');
   });
 });
