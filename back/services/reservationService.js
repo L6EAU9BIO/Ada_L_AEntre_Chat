@@ -29,5 +29,9 @@ export async function creatReservation(data) {
 }
 
 export async function updateReservation(id, data) {
+    return reservationModel.updateReservation(id, data)
+}
+
+export async function deleteReservation(id){
     return reservationModel.remove(id)
 }
