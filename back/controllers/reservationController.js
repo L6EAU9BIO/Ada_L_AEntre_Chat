@@ -28,7 +28,9 @@ export async function getReservationById( req, res , next) {
 // Route POST : Permet de creer une reservation -
 export async function creatReservation(req, res, next){
     try{
-        const reservs = await reservationService.creatReservation(req.body)
+        const reservs = await reservationService.creatReservation({...req.body,
+            staff_id: req.utilisateur.id
+        })
         return res.status(201).json(reservs)
     }catch (error){
         return next(error)
