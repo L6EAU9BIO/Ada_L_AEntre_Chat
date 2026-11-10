@@ -40,6 +40,6 @@
 
 # {"email": 42, "motDePasse": true}
 
-
+GET {{api}}/reservation?room_id=1&date=2026-12-01
 
 
