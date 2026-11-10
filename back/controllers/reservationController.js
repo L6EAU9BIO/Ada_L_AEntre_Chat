@@ -36,7 +36,7 @@ export async function creatReservation(req, res, next){
 }
 
 // Route PUT : Permet de modifier une reservation -
-export async function updateReservation(res, req, next) {
+export async function updateReservation(req, res, next) {
     try{
         const reservs = await reservationService.updateReservation(req.params.id, req.body)
 
@@ -50,7 +50,7 @@ export async function updateReservation(res, req, next) {
 }
 
 // Route DELETE : Permet de supprimer une reservation 
-export async function deleteReservation(res, req, next){
+export async function deleteReservation(req, res, next){
     try{
         const supp = await reservationService.deleteReservation(req.params.id)
         

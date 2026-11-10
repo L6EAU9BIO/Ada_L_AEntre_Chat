@@ -19,7 +19,7 @@ let receivedReservationId = null;
  
 // 1 - MOCK DU SERVICE
 //  Les noms exportés ici doivent être IDENTIQUES à ceux que ton controller importe
-jest.unstable_mockModule('../services/reservationService.js', () => ({
+jest.unstable_mockModule('../../services/reservationService.js', () => ({
   getReservation: async () => {
     if (mockErrorGetReservation) {
       mockErrorGetReservation = false;
@@ -41,8 +41,8 @@ jest.unstable_mockModule('../services/reservationService.js', () => ({
 }));
  
 // 2 - IMPORT DYNAMIQUE, après le mock
-const { getReservationController, getReservationByIdController } =
-  await import('../back/test/controllers/reservationControllers.js');
+const { getReservation: getReservationController, getReservationById: getReservationByIdController } =
+  await import('../../controllers/reservationController.js');
  
 // 3 - FAUSSE RESPONSE
 function createMockRes() {
