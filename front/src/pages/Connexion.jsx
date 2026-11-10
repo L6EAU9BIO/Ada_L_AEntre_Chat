@@ -1,40 +1,29 @@
 import { useState } from "react";
 import { useNavigate} from "react-router"
-import { connexion } from "../services/authApi"
+import { useAuth } from "../hooks/useAuth.js";
+import LoginForm from "../components/LoginForm/LoginForm.jsx";
 
 function Connexion() {
-    const[email, setEmail] = useState("")
-    const[motDePasse, setMotDePasse] = useState("")
-    const[erreur, setErreur] = useState("")
+    const {seConnecter} = useAuth()
     const navigate = useNavigate()
+    const [erreur, setErreur] = useState("")
 
-    async function handleSubmit(event){
-        event.preventDefault()
+    async function handleConnexion(email, motDePasse){
         setErreur("")
         try{
-            await connexion(email, motDePasse)
-            navigate("/")
+            await seConnecter(email, motDePasse)
+            navigate("/reservation")
         } catch (err) {
             setErreur(err.message)
         }
     }
     return (
-        <form onSubmit={handleSubmit}>
+        <section>
             <h2>Connexion</h2>
+            <LoginForm onConnexion = {handleConnexion} erreur={erreur}/>
+        </section>
 
-            <label htmlFor="email">Email</label>
-            <input id="email" type="email" value={email}
-                onChange={(e) => setEmail(e.target.value)} required /> 
             
-            <label htmlFor="motDePasse">Mot de passe</label>
-            <input id="motDePasse" type="password" value={motDePasse}
-                onChange={(e) => setMotDePasse(e.target.value)} required /> 
-
-            {erreur && <p role="alert">{erreur}</p>}
-
-            <button type="submit">Se connecter</button>
-
-        </form>
     )
 }
 
