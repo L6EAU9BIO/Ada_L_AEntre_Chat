@@ -18,6 +18,7 @@ jest.unstable_mockModule('../../services/reservationService.js', () => ({
     getReservationById: jest.fn(),
     creatReservation: jest.fn(),
     updateReservation: jest.fn(),
+    deleteReservation: jest.fn()
 }))
 
 // import Apres le mock sinon le vrai reservationService.js est chargé
