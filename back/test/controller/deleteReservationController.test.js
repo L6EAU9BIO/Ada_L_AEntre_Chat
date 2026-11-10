@@ -15,7 +15,7 @@ jest.unstable_mockModule('../../services/reservationService.js', () => ({
 
 // Controller : import APRES le mock, sinon le vrai reservationService.js est appelé
 
-const { deleteReservationController } = await import('../../controllers/reservationController.js')
+const { deleteReservation: deleteReservationController } = await import('../../controllers/reservationController.js')
 
 // Service : on récupere la réference au mock pour le configurer dans chaque test
 
