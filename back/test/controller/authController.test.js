@@ -1,0 +1,116 @@
+import {describe, it, expect, jest} from '@jest/globals'
+
+// Fausse version de authService.js : pas de vrai BDD, pas de JWT réel
+jest.unstable_mockModule('../../services/authService.js', () => ({
+    inscrire: jest.fn(),
+    connecterStaff: jest.fn(),
+}))
+
+// Import Après le mock 
+const { authController } = await import('../../controllers/authController.js')
+
+const { authService } = await import('../../services/authService.js')
+
+// Fausse réponse Express
+function authMockRes() {
+  const res = { statusCode: null, body: null };
+  res.status = (code) => {
+    res.statusCode = code;
+    return res;
+  };
+  res.json = (payload) => {
+    res.body = payload;
+    return res;
+  };
+  return res;
+}
+
+// Corps valide réutilisé, qu'on modifie au cas par cas.
+const VALID_BODY = { mail: 'lea@mail.com', password: 'password' };
+
+// TESTS
+describe('Valider les entrées de connexion', () => {
+  it('renvoie 400 si mail ou password est manquant', async () => {
+    // GIVEN : body vide
+    const req = { body: {} };
+    const res = authMockRes();
+
+    // WHEN // THEN
+
+    await expect(authController(req, res)).rejects.toMatchObject({
+      statusCode: 400,
+      message: 'Email et mot de passe requis',
+    });
+  });
+
+  it("renvoie 400 si le format de l'email est invalide", async () => {
+    // GIVEN : mail sans @
+    const req = { body: { ...VALID_BODY, mail: 'lea-mail.com' } };
+    const res = authMockRes();
+
+    // WHEN // THEN
+    await expect(authController(req, res)).rejects.toMatchObject({
+      statusCode: 400,
+      message: 'Format Email invalide',
+    });
+  });
+
+  it('renvoie 400 si le password fait moins de 8 caractères', async () => {
+    // GIVEN : password trop court
+    const req = { body: { ...VALID_BODY, password: 'court' } };
+    const res = authMockRes();
+
+    // WHEN // THEN
+    await expect(authController(req, res)).rejects.toMatchObject({
+      statusCode: 400,
+      message: 'Format password invalide',
+    });
+  });
+});
+
+describe('Valider la connexion elle-même', () => {
+  it('renvoie 401 si le service ne renvoie pas de token (identifiants faux)', async () => {
+    // GIVEN : service renvoie null
+    const req = { body: { ...VALID_BODY } };
+    const res = authMockRes();
+    authService.mockResolvedValue(null);
+
+    // WHEN // THEN
+    await expect(authController(req, res)).rejects.toMatchObject({
+      statusCode: 401,
+      message: 'Identifiants invalides',
+    });
+  });
+
+  it('renvoie le token si les identifiants sont valides', async () => {
+    // GIVEN : service renvoie un token
+    const req = { body: { ...VALID_BODY } };
+    const res = authMockRes();
+    const FAKE_LOGIN = {
+      token: 'fake.jwt.token', // ← une chaîne, comme un vrai token
+      userInfo: {
+        // ← un objet, comme le vrai userInfo
+        userName: 'Léa',
+        role: 'STAFF',
+      },
+    };
+    authService.mockResolvedValue(FAKE_LOGIN);
+
+    // WHEN
+    await authController(req, res);
+
+    // THEN : res.json({ token }) appelé directement, sans res.status -> statusCode reste null
+    expect(res.body).toEqual(FAKE_LOGIN);
+    expect(authService).toHaveBeenCalledWith('lea@mail.com', 'password');
+  });
+
+  it("propage l'erreur levée par le service", async () => {
+    // GIVEN : service throw
+    const req = { body: { ...VALID_BODY } };
+    const res = authMockRes();
+    authService.mockRejectedValue(new Error('DB down'));
+
+    // WHEN // THEN
+    await expect(authController(req, res)).rejects.toThrow('DB down');
+  });
+});
