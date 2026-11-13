@@ -1,116 +1,139 @@
-import {describe, it, expect, jest} from '@jest/globals'
+import { describe, it, expect, jest, beforeEach } from '@jest/globals'
 
-// Fausse version de authService.js : pas de vrai BDD, pas de JWT réel
+// Mock du service : pas de vraie BDD, pas de vrai JWT
 jest.unstable_mockModule('../../services/authService.js', () => ({
-    inscrire: jest.fn(),
-    connecterStaff: jest.fn(),
+  inscrire: jest.fn(),
+  connecterStaff: jest.fn(),
 }))
 
-// Import Après le mock 
-const { authController } = await import('../../controllers/authController.js')
-
-const { authService } = await import('../../services/authService.js')
+// Imports APRÈS le mock
+const loginService = await import('../../services/authService.js')
+const { connexion, deconnexion, moi } = await import('../../controllers/authController.js')
+const { ErrorHttp } = await import('../../server/erreurs.js')
 
 // Fausse réponse Express
-function authMockRes() {
-  const res = { statusCode: null, body: null };
-  res.status = (code) => {
-    res.statusCode = code;
-    return res;
-  };
-  res.json = (payload) => {
-    res.body = payload;
-    return res;
-  };
-  return res;
+function mockRes() {
+  const res = {
+    statusCode: null,
+    body: null,
+    cookies: {},
+    clearedCookies: [],
+    ended: false,
+  }
+  res.status = (code) => { res.statusCode = code; return res }
+  res.json = (payload) => { res.body = payload; return res }
+  res.cookie = (name, value, options) => { res.cookies[name] = { value, options }; return res }
+  res.clearCookie = (name) => { res.clearedCookies.push(name); return res }
+  res.end = () => { res.ended = true; return res }
+  return res
 }
 
-// Corps valide réutilisé, qu'on modifie au cas par cas.
-const VALID_BODY = { mail: 'lea@mail.com', password: 'password' };
+const VALID_BODY = { email: 'lea@mail.com', motDePasse: 'password123' }
 
-// TESTS
-describe('Valider les entrées de connexion', () => {
-  it('renvoie 400 si mail ou password est manquant', async () => {
-    // GIVEN : body vide
-    const req = { body: {} };
-    const res = authMockRes();
+beforeEach(() => {
+  jest.clearAllMocks()
+})
 
-    // WHEN // THEN
+describe('connexion : validation des entrées', () => {
+  it('appelle next avec une ErrorHttp 422 si le body est vide', async () => {
+    const req = { body: {} }
+    const res = mockRes()
+    const next = jest.fn()
 
-    await expect(authController(req, res)).rejects.toMatchObject({
-      statusCode: 400,
-      message: 'Email et mot de passe requis',
-    });
-  });
+    await connexion(req, res, next)
 
-  it("renvoie 400 si le format de l'email est invalide", async () => {
-    // GIVEN : mail sans @
-    const req = { body: { ...VALID_BODY, mail: 'lea-mail.com' } };
-    const res = authMockRes();
+    expect(next).toHaveBeenCalledTimes(1)
+    const err = next.mock.calls[0][0]
+    expect(err).toBeInstanceOf(ErrorHttp)
+    expect(err.message).toBe('Email et mot de passe obligatoires')
+    expect(loginService.connecterStaff).not.toHaveBeenCalled()
+  })
 
-    // WHEN // THEN
-    await expect(authController(req, res)).rejects.toMatchObject({
-      statusCode: 400,
-      message: 'Format Email invalide',
-    });
-  });
+  it("appelle next avec une ErrorHttp 422 si l'email est vide", async () => {
+    const req = { body: { ...VALID_BODY, email: '   ' } }
+    const next = jest.fn()
 
-  it('renvoie 400 si le password fait moins de 8 caractères', async () => {
-    // GIVEN : password trop court
-    const req = { body: { ...VALID_BODY, password: 'court' } };
-    const res = authMockRes();
+    await connexion(req, mockRes(), next)
 
-    // WHEN // THEN
-    await expect(authController(req, res)).rejects.toMatchObject({
-      statusCode: 400,
-      message: 'Format password invalide',
-    });
-  });
-});
+    expect(next.mock.calls[0][0]).toBeInstanceOf(ErrorHttp)
+  })
 
-describe('Valider la connexion elle-même', () => {
-  it('renvoie 401 si le service ne renvoie pas de token (identifiants faux)', async () => {
-    // GIVEN : service renvoie null
-    const req = { body: { ...VALID_BODY } };
-    const res = authMockRes();
-    authService.mockResolvedValue(null);
+  it('appelle next avec une ErrorHttp 422 si req.body est undefined', async () => {
+    const next = jest.fn()
 
-    // WHEN // THEN
-    await expect(authController(req, res)).rejects.toMatchObject({
-      statusCode: 401,
-      message: 'Identifiants invalides',
-    });
-  });
+    await connexion({}, mockRes(), next)
 
-  it('renvoie le token si les identifiants sont valides', async () => {
-    // GIVEN : service renvoie un token
-    const req = { body: { ...VALID_BODY } };
-    const res = authMockRes();
-    const FAKE_LOGIN = {
-      token: 'fake.jwt.token', // ← une chaîne, comme un vrai token
-      userInfo: {
-        // ← un objet, comme le vrai userInfo
-        userName: 'Léa',
-        role: 'STAFF',
-      },
-    };
-    authService.mockResolvedValue(FAKE_LOGIN);
+    expect(next.mock.calls[0][0]).toBeInstanceOf(ErrorHttp)
+  })
+})
 
-    // WHEN
-    await authController(req, res);
+describe('connexion : appel du service', () => {
+  it('pose le cookie et renvoie le staff si les identifiants sont valides', async () => {
+    const req = { body: { email: '  LEA@Mail.com ', motDePasse: 'password123' } }
+    const res = mockRes()
+    const next = jest.fn()
+    const staff = { nom: 'Léa', role: 'STAFF' }
+    loginService.connecterStaff.mockResolvedValue({ token: 'fake.jwt.token', staff })
 
-    // THEN : res.json({ token }) appelé directement, sans res.status -> statusCode reste null
-    expect(res.body).toEqual(FAKE_LOGIN);
-    expect(authService).toHaveBeenCalledWith('lea@mail.com', 'password');
-  });
+    await connexion(req, res, next)
 
-  it("propage l'erreur levée par le service", async () => {
-    // GIVEN : service throw
-    const req = { body: { ...VALID_BODY } };
-    const res = authMockRes();
-    authService.mockRejectedValue(new Error('DB down'));
+    // l'email est normalisé (trim + lowercase) avant l'appel au service
+    expect(loginService.connecterStaff).toHaveBeenCalledWith({
+      email: 'lea@mail.com',
+      motDePasse: 'password123',
+    })
+    expect(res.cookies.token.value).toBe('fake.jwt.token')
+    expect(res.cookies.token.options).toMatchObject({
+      httpOnly: true,
+      sameSite: 'lax',
+      maxAge: 8 * 60 * 60 * 1000,
+    })
+    expect(res.body).toEqual({ staff })
+    expect(next).not.toHaveBeenCalled()
+  })
 
-    // WHEN // THEN
-    await expect(authController(req, res)).rejects.toThrow('DB down');
-  });
-});
+  it("transmet à next l'erreur levée par le service (ex : identifiants invalides)", async () => {
+    const res = mockRes()
+    const next = jest.fn()
+    const erreur = new ErrorHttp(401, 'Identifiants invalides')
+    loginService.connecterStaff.mockRejectedValue(erreur)
+
+    await connexion({ body: { ...VALID_BODY } }, res, next)
+
+    expect(next).toHaveBeenCalledWith(erreur)
+    expect(res.cookies.token).toBeUndefined()
+  })
+
+  it("transmet à next une erreur technique (ex : BDD down)", async () => {
+    const next = jest.fn()
+    const erreur = new Error('DB down')
+    loginService.connecterStaff.mockRejectedValue(erreur)
+
+    await connexion({ body: { ...VALID_BODY } }, mockRes(), next)
+
+    expect(next).toHaveBeenCalledWith(erreur)
+  })
+})
+
+describe('deconnexion', () => {
+  it('supprime le cookie et renvoie 204', () => {
+    const res = mockRes()
+
+    deconnexion({}, res)
+
+    expect(res.clearedCookies).toEqual(['token'])
+    expect(res.statusCode).toBe(204)
+    expect(res.ended).toBe(true)
+  })
+})
+
+describe('moi', () => {
+  it("renvoie l'utilisateur présent sur la requête", () => {
+    const res = mockRes()
+    const utilisateur = { id: 1, nom: 'Léa' }
+
+    moi({ utilisateur }, res)
+
+    expect(res.body).toEqual({ utilisateur })
+  })
+})

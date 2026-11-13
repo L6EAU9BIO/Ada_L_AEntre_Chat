@@ -1,6 +1,5 @@
-import { describe, it, expect, jest } from '@jest/globals';
- 
-// Donnée simulée par défaut, pour représenter une vraie réservation
+import { describe, it, expect, jest, beforeEach } from '@jest/globals'
+
 const DEFAULT_RESERVATION = {
   id: 2,
   date_reservation: '2026-12-01T19:00:00',
@@ -8,132 +7,126 @@ const DEFAULT_RESERVATION = {
   customer_id: null,
   staff_id: 2,
   room_id: 3,
-};
- 
-// Interrupteurs : font échouer le service pour UN SEUL test
-let mockErrorGetReservation = false;
-let mockErrorGetReservationById = false;
- 
-// Capture de l'id reçu par le service
-let receivedReservationId = null;
- 
-// 1 - MOCK DU SERVICE
-//  Les noms exportés ici doivent être IDENTIQUES à ceux que ton controller importe
-jest.unstable_mockModule('../../services/reservationService.js', () => ({
-  getReservation: async () => {
-    if (mockErrorGetReservation) {
-      mockErrorGetReservation = false;
-      throw new Error('Erreur DB simulée');
-    }
-    return [DEFAULT_RESERVATION];
-  },
-  getReservationById: async (id) => {
-    receivedReservationId = id;
-    if (mockErrorGetReservationById) {
-      mockErrorGetReservationById = false;
-      throw new Error('Erreur DB simulée');
-    }
-    return DEFAULT_RESERVATION; // un seul objet, pas un tableau
-  },
-  createReservation: async () => undefined, 
-  updateReservation: async () => undefined,
-  deleteReservation: async () => undefined,
-}));
- 
-// 2 - IMPORT DYNAMIQUE, après le mock
-const { getReservation: getReservationController, getReservationById: getReservationByIdController } =
-  await import('../../controllers/reservationController.js');
- 
-// 3 - FAUSSE RESPONSE
-function createMockRes() {
-  const res = { statusCode: null, body: null };
-  res.status = (code) => {
-    res.statusCode = code;
-    return res;
-  };
-  res.json = (payload) => {
-    res.body = payload;
-    return res;
-  };
-  return res;
 }
- 
-// 4 - TESTS
- 
-describe('getReservationController : Vérification de la récupération de toutes les réservations', () => {
-  it('Vérifier que les réservations sont bien récupérées', async () => {
-    // GIVEN
-    const req = {};
-    const res = createMockRes();
- 
-    // WHEN
-    await getReservationController(req, res);
- 
-    // THEN
-    expect(res.statusCode).toBe(200);
-    expect(res.body).toBeDefined();
-  });
- 
-  it("Vérifier que si le service échoue, l'erreur remonte", async () => {
-    // GIVEN
-    const req = {};
-    const res = createMockRes();
-    mockErrorGetReservation = true;
- 
-    // WHEN / THEN
-    await expect(getReservationController(req, res)).rejects.toThrow(
-      'Erreur DB simulée'
-    );
-  });
-});
- 
-describe("getReservationByIdController : Vérification de la récupération d'une réservation par id", () => {
-  it("Vérifier que si l'id est manquant, l'erreur AppError 400 est levée", async () => {
-    // GIVEN
-    const req = { params: {} };
-    const res = createMockRes();
- 
-    // WHEN / THEN
-    await expect(getReservationByIdController(req, res)).rejects.toMatchObject({
-      statusCode: 400,
-    });
-  });
- 
-  it("Vérifier que si l'id n'est pas un nombre, l'erreur AppError 400 est levée", async () => {
-    // GIVEN
-    const req = { params: { id: 'abc' } };
-    const res = createMockRes();
- 
-    // WHEN / THEN
-    await expect(getReservationByIdController(req, res)).rejects.toMatchObject({
-      statusCode: 400,
-    });
-  });
- 
-  it("Vérifier que si l'id est valide, ça retourne bien 200", async () => {
-    // GIVEN : l'id est une string dans l'URL
-    const req = { params: { id: '2' } };
-    const res = createMockRes();
- 
-    // WHEN
-    await getReservationByIdController(req, res);
- 
-    // THEN
-    expect(res.statusCode).toBe(200);
-    expect(receivedReservationId).toBe(2); // converti en number par le controller
-  });
- 
-  it("Vérifier que si le service échoue, l'erreur remonte", async () => {
-    // GIVEN
-    const req = { params: { id: '2' } };
-    const res = createMockRes();
-    mockErrorGetReservationById = true;
- 
-    // WHEN / THEN
-    await expect(getReservationByIdController(req, res)).rejects.toThrow(
-      'Erreur DB simulée'
-    );
-  });
-});
- 
 
+// Mock du service : les noms doivent être IDENTIQUES à ceux du service réel
+jest.unstable_mockModule('../../services/reservationService.js', () => ({
+  getAllReserv: jest.fn(),
+  getReservationById: jest.fn(),
+  creatReservation: jest.fn(),
+  updateReservation: jest.fn(),
+  deleteReservation: jest.fn(),
+}))
+
+// Imports APRÈS le mock
+const reservationService = await import('../../services/reservationService.js')
+const { getReservation, getReservationById } = await import('../../controllers/reservationController.js')
+const { ErrorHttp } = await import('../../server/erreurs.js')
+
+function createMockRes() {
+  const res = { statusCode: null, body: null }
+  res.status = (code) => { res.statusCode = code; return res }
+  res.json = (payload) => { res.body = payload; return res }
+  return res
+}
+
+beforeEach(() => {
+  jest.clearAllMocks()
+})
+
+describe('getReservation : récupération de toutes les réservations', () => {
+  it('renvoie 200 avec la liste des réservations', async () => {
+    const req = { query: {} }
+    const res = createMockRes()
+    const next = jest.fn()
+    reservationService.getAllReserv.mockResolvedValue([DEFAULT_RESERVATION])
+
+    await getReservation(req, res, next)
+
+    expect(res.statusCode).toBe(200)
+    expect(res.body).toEqual([DEFAULT_RESERVATION])
+    expect(next).not.toHaveBeenCalled()
+  })
+
+  it('transmet les filtres room_id et date au service', async () => {
+    const req = { query: { room_id: '3', date: '2026-12-01' } }
+    reservationService.getAllReserv.mockResolvedValue([])
+
+    await getReservation(req, createMockRes(), jest.fn())
+
+    expect(reservationService.getAllReserv).toHaveBeenCalledWith('3', '2026-12-01')
+  })
+
+  it("transmet à next l'erreur levée par le service", async () => {
+    const res = createMockRes()
+    const next = jest.fn()
+    const erreur = new Error('Erreur DB simulée')
+    reservationService.getAllReserv.mockRejectedValue(erreur)
+
+    await getReservation({ query: {} }, res, next)
+
+    expect(next).toHaveBeenCalledWith(erreur)
+    expect(res.statusCode).toBeNull()
+  })
+})
+
+describe('getReservationById : récupération par id', () => {
+  it.each([
+    ['id absent', undefined],
+    ['id null', null],
+    ['id non numérique', 'abc'],
+    ['id à 0', '0'],
+    ['id négatif', '-3'],
+    ['id décimal', '1.5'],
+  ])('appelle next avec une ErrorHttp si : %s', async (_nom, id) => {
+    const req = { params: { id } }
+    const res = createMockRes()
+    const next = jest.fn()
+
+    await getReservationById(req, res, next)
+
+    expect(next).toHaveBeenCalledTimes(1)
+    expect(next.mock.calls[0][0]).toBeInstanceOf(ErrorHttp)
+    expect(reservationService.getReservationById).not.toHaveBeenCalled()
+    expect(res.statusCode).toBeNull()
+  })
+
+  it("renvoie 200 et appelle le service avec l'id converti en nombre", async () => {
+    const req = { params: { id: '2' } }
+    const res = createMockRes()
+    const next = jest.fn()
+    reservationService.getReservationById.mockResolvedValue(DEFAULT_RESERVATION)
+
+    await getReservationById(req, res, next)
+
+    expect(reservationService.getReservationById).toHaveBeenCalledWith(2)
+    expect(res.statusCode).toBe(200)
+    expect(res.body).toEqual(DEFAULT_RESERVATION)
+    expect(next).not.toHaveBeenCalled()
+  })
+
+  it('renvoie 404 si la réservation est introuvable', async () => {
+    const req = { params: { id: '99' } }
+    const res = createMockRes()
+    const next = jest.fn()
+    reservationService.getReservationById.mockResolvedValue(null)
+
+    await getReservationById(req, res, next)
+
+    expect(res.statusCode).toBe(404)
+    expect(res.body).toEqual({ message: 'Reservation introuvable' })
+    expect(next).not.toHaveBeenCalled()
+  })
+
+  it("transmet à next l'erreur levée par le service", async () => {
+    const res = createMockRes()
+    const next = jest.fn()
+    const erreur = new Error('Erreur DB simulée')
+    reservationService.getReservationById.mockRejectedValue(erreur)
+
+    await getReservationById({ params: { id: '2' } }, res, next)
+
+    expect(next).toHaveBeenCalledWith(erreur)
+    expect(res.statusCode).toBeNull()
+  })
+})
