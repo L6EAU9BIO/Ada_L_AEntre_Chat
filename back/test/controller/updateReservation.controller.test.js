@@ -1,138 +1,109 @@
-import { describe, it , expect, jest } from '@jest/globals'
+import { describe, it, expect, jest, beforeEach } from '@jest/globals'
 
-// Donné de test 
-// Objet envoyé par dééfaut par le service mocké, pour ne jamais taper la vrai BDD
-const UPDATE_RESERVATION = {
+const UPDATED_RESERVATION = {
   id: 2,
-  date_reservation: '2026-11-01T19:00:00',
-  places_reservation: 2,
+  date_reservation: '2026-12-05T20:00:00',
+  places_reservation: 6,
   customer_id: null,
   staff_id: 2,
-  room_id: 1,
+  room_id: 3,
 }
 
-// Mock des seervices : Le mock sera ocnfigurer a chaque test
 jest.unstable_mockModule('../../services/reservationService.js', () => ({
-    getAllReserv: jest.fn(),
-    getReservationById: jest.fn(),
-    creatReservation: jest.fn(),
-    updateReservation: jest.fn(),
-    deleteReservation: jest.fn()
+  getAllReserv: jest.fn(),
+  getReservationById: jest.fn(),
+  creatReservation: jest.fn(),
+  updateReservation: jest.fn(),
+  deleteReservation: jest.fn(),
 }))
 
-// import apres le mock sinon le vrai reservationService.js  est chargé 
-const { creatReservationService } = await import('../../services/reservationService.js')
-
-// MOCK res
+const reservationService = await import('../../services/reservationService.js')
+const { updateReservation } = await import('../../controllers/reservationController.js')
+const { ErrorHttp } = await import('../../server/erreurs.js')
 
 function updateMockRes() {
-  const res = { statusCode: null, body: null };
-  res.status = (code) => {
-    res.statusCode = code;
-    return res;
-  };
-  res.json = (payload) => {
-    res.body = payload;
-    return res;
-  };
-  return res;
+  const res = { statusCode: null, body: null }
+  res.status = (code) => { res.statusCode = code; return res }
+  res.json = (payload) => { res.body = payload; return res }
+  return res
 }
 
-// TEST 
-describe('Valider que les données à modifier sont bien récupérées', () => {
-  it("renvoie une erreur 400 si l'id n'est pas valide", async () => {
-    // GIVEN
-    const req = { params: { id: 'deux' }, body: {} };
-    const res = updateMockRes();
+const VALID_BODY = {
+  date_reservation: '2026-12-05T20:00:00',
+  places_reservation: 6,
+  room_id: 3,
+}
 
-    // WHEN + THEN
-    await expect(updateReservationController(req, res)).rejects.toMatchObject({
-      statusCode: 400,
-      message: "L'identifiant de la reservation n'est pas valide !",
-    });
-  });
+beforeEach(() => {
+  jest.clearAllMocks()
+})
 
-  it("renvoie une erreur 400 si le champ DATE est vide", async () => {
-    // GIVEN
-    const req = {
-      params: { id: '1' },
-            body: {
-                date_reservation: ' ',
-                places_reservation: 2,
-                customer_id: null,
-                staff_id: null,
-                room_id: 3,
-      },
-    };
-    const res = updateMockRes();
+describe('updateReservation : validation', () => {
+  it.each([
+    ['id absent', undefined],
+    ['id non numérique', 'abc'],
+    ['id à 0', '0'],
+    ['id négatif', '-3'],
+  ])('appelle next avec une ErrorHttp si : %s', async (_nom, id) => {
+    const res = updateMockRes()
+    const next = jest.fn()
 
-    // WHEN + THEN
-    await expect(updateReservationController(req, res)).rejects.toMatchObject({
-      statusCode: 400,
-      message: 'La date est requis ou mal renseigné!',
-    });
-  });
+    await updateReservation({ params: { id }, body: { ...VALID_BODY } }, res, next)
 
-  it('renvoie une erreur 400 si le champ PLACES_RESERVATION est vide', async () => {
-    // GIVEN
-    const req = {
-      params: { id: '1' },
-            body: {
-                date_reservation: '2026-12-01T19:00:00',
-                places_reservation: null,
-                customer_id: null,
-                staff_id: null,
-                room_id: 3,
-      },
-    };
-    const res = updateMockRes();
-    // WHEN + THEN
-    await expect(updateReservationController(req, res)).rejects.toMatchObject({
-      statusCode: 400,
-      message: 'Le nombre de places est requis ou mal renseigné!',
-    });
-  });
+    expect(next.mock.calls[0][0]).toBeInstanceOf(ErrorHttp)
+    expect(reservationService.updateReservation).not.toHaveBeenCalled()
+    expect(res.statusCode).toBeNull()
+  })
 
-  it("renvoie une erreur 400 si le champ ROOM_ID est vide", async () => {
-    // GIVEN
-    const req = {
-       id: 2,
-  date_reservation: '2026-12-01T19:00:00',
-  places_reservation: 3,
-  customer_id: null,
-  staff_id: 2,
-  room_id: null,
-      }
-    
-    const res = updateMockRes();
+  it.each([
+    ['date vide', { date_reservation: ' ' }],
+    ['places manquantes', { places_reservation: null }],
+    ['room manquante', { room_id: null }],
+  ])('appelle next avec une ErrorHttp si le body est invalide : %s', async (_nom, champ) => {
+    const res = updateMockRes()
+    const next = jest.fn()
 
-    // WHEN + THEN
-    await expect(updateReservationController(req, res)).rejects.toMatchObject({
-      statusCode: 400,
-      message: 'La room doit etre choisie !',
-    });
-  });
+    await updateReservation({ params: { id: '2' }, body: { ...VALID_BODY, ...champ } }, res, next)
 
-  describe('Valider que la reservation est bien été modifier', () => {
-    it('succés 200 si reservation a bien été modifier', async () => {
-      const req = {
-        params: { id: '1' },
-              body: {
-               date_reservation: '2026-12-01T19:00:00',
-               places_reservation: 2,
-               customer_id: null,
-               staff_id: null,
-               room_id: 2,
-        },
-      };
-      const res = updateMockRes();
-  
-      updateReservationService.mockResolvedValue(UPDATED_RESERVATION);
-  
-      await creatReservationController(req, res);
-  
-      expect(res.statusCode).toBe(200);
-      expect(res.body).toEqual(UPDATE_RESERVATION);
-    });
-  });
+    expect(next.mock.calls[0][0]).toBeInstanceOf(ErrorHttp)
+    expect(reservationService.updateReservation).not.toHaveBeenCalled()
+    expect(res.statusCode).toBeNull()
+  })
+})
+
+describe('updateReservation : modification', () => {
+  it('renvoie 200 avec la réservation modifiée', async () => {
+    const res = updateMockRes()
+    const next = jest.fn()
+    reservationService.updateReservation.mockResolvedValue(UPDATED_RESERVATION)
+
+    await updateReservation({ params: { id: '2' }, body: { ...VALID_BODY } }, res, next)
+
+    expect(reservationService.updateReservation).toHaveBeenCalledWith(2, VALID_BODY)
+    expect(res.statusCode).toBe(200)
+    expect(res.body).toEqual(UPDATED_RESERVATION)
+    expect(next).not.toHaveBeenCalled()
+  })
+
+  it('renvoie 404 si la réservation est introuvable', async () => {
+    const res = updateMockRes()
+    reservationService.updateReservation.mockResolvedValue(null)
+
+    await updateReservation({ params: { id: '99' }, body: { ...VALID_BODY } }, res, jest.fn())
+
+    expect(res.statusCode).toBe(404)
+    expect(res.body).toEqual({ message: 'Reservation introuvable' })
+  })
+
+  it("transmet à next l'erreur levée par le service", async () => {
+    const res = updateMockRes()
+    const next = jest.fn()
+    const erreur = new Error('DB down')
+    reservationService.updateReservation.mockRejectedValue(erreur)
+
+    await updateReservation({ params: { id: '2' }, body: { ...VALID_BODY } }, res, next)
+
+    expect(next).toHaveBeenCalledWith(erreur)
+    expect(res.statusCode).toBeNull()
+  })
 })

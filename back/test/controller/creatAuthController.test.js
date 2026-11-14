@@ -1,157 +1,107 @@
-import { describe, it, expect, jest } from '@jest/globals'
-import { inscription } from '../../controllers/authController'
+import { describe, it, expect, jest, beforeEach } from '@jest/globals'
 
-// On remplace authService par une fausse version pas de vrai BDD ni de bcrypt
+// Mock du service : pas de vraie BDD, pas de bcrypt
 jest.unstable_mockModule('../../services/authService.js', () => ({
-    inscrire: jest.fn(),
-    connecterStaff: jest.fn(),
+  inscrire: jest.fn(),
+  connecterStaff: jest.fn(),
 }))
 
-// On importe Apres le mock, sinon le controller irait prendre le vrai service
-const { createAuthController } = await import('../../controllers/authController.js')
+// Imports APRÈS le mock
+const loginService = await import('../../services/authService.js')
+const { inscription } = await import('../../controllers/authController.js')
+const { ErrorHttp } = await import('../../server/erreurs.js')
 
-const { createAuthService } = await import('../../services/authService.js')
-
-// Fausse réponse Express : on capture status + body, et send() pour le 204.
+// Fausse réponse Express
 function createMockRes() {
-  const res = { statusCode: null, body: null };
-  res.status = (code) => {
-    res.statusCode = code;
-    return res;
-  };
-  res.json = (payload) => {
-    res.body = payload;
-    return res;
-  };
-  res.send = jest.fn(() => res);
-  return res;
+  const res = { statusCode: null, body: null }
+  res.status = (code) => { res.statusCode = code; return res }
+  res.json = (payload) => { res.body = payload; return res }
+  return res
 }
-//* 'id, nom, prenom, mail as email, num_tel as tel, role, date_arrivee';
-// TESTS
-describe('Valider la création du compte (inscription)', () => {
-  it("renvoie 400 si un champ NOM requis ", async () => {
-    // GIVEN : body sans name
-    const req = {
-      body: {
-        nom: " ",
-        prenom: "Jean-miche",
-        email: "jeanjean@fr",
-        num_tel: '090099',
-        role: "client",
-        password: "password"
-      }
-    }
-    const res = createMockRes()
 
-    // WHEN + THEN 
-    await expect(createAuthController(req, res)).rejects.toMatchObject({
-      statusCode: 400,
-      message: 'Champs obligatoire manquants'
-    })
-  })
-  it('renvoie 400 si le champ prenom est vide', async () => {
-    const req = {
-      body: {
-        nom: "DeLarue",
-        prenom: " ",
-        email: "jeanjean@fr",
-        num_tel: '090099',
-        role: "client",
-        password: "password"
-      }
-    }
-    const res = createMockRes()
+const VALID_BODY = {
+  nom: 'DeLarue',
+  prenom: 'Jean-Michel',
+  email: 'jeanjean@mail.fr',
+  tel: '0600000000',
+  motDePasse: 'password123',
+}
 
-    // WHEN + THEN 
-    await expect(createAuthController(req, res)).rejects.toMatchObject({
-      statusCode: 400,
-      message: 'Champ manquant requis'
-    }) 
-  })
-  it("renvoie 400 si le champs EMAIL est manquant", async () => {
-    const req = {
-      body: {
-        nom: "DeLarue",
-        prenom: "Jean-miche",
-        email: " ",
-        num_tel: '090099',
-        role: "client",
-        password: "password"
-      }
-    }
-    const res = createMockRes()
+beforeEach(() => {
+  jest.clearAllMocks()
+})
 
-    // WHEN + THEN
-    await expect(createAuthController(req, res)).rejects.toMatchObject({
-      statusCode: 400,
-      message: 'Champ requis manquant'
-    })
-  })
-  it('renvoie 400 si le champ NUM_TEL est absent', async () => {
-    const req = {
-      body: {
-        nom: "DeLarue",
-        prenom: "Jean-miche",
-        email: "jeanjean@fr",
-        num_tel: ' ',
-        role: "client",
-        password: "password"
-      }
-    }
+describe('inscription : validation des champs', () => {
+  it.each([
+    ['nom vide', { nom: ' ' }],
+    ['prénom vide', { prenom: ' ' }],
+    ['email vide', { email: ' ' }],
+    ['email au format invalide', { email: 'jeanjean@fr' }],
+    ['téléphone vide', { tel: ' ' }],
+    ['mot de passe vide', { motDePasse: '' }],
+    ['mot de passe trop court', { motDePasse: 'court' }],
+  ])('appelle next avec une ErrorHttp 422 si : %s', async (_nom, champ) => {
+    const req = { body: { ...VALID_BODY, ...champ } }
     const res = createMockRes()
+    const next = jest.fn()
 
-    await expect(createAuthController(req, res)).rejects.toMatchObject({
-      statusCode: 400,
-      message: 'Champs requis manquants'
-    })
+    await inscription(req, res, next)
+
+    expect(next).toHaveBeenCalledTimes(1)
+    const err = next.mock.calls[0][0]
+    expect(err).toBeInstanceOf(ErrorHttp)
+    expect(err.message).toBe('Données invalides')
+    expect(loginService.inscrire).not.toHaveBeenCalled()
+    expect(res.statusCode).toBeNull()
   })
 
-  it("Renvoie 400 si le champ PASSWORD est manquant", async () => {
-    const req = {
-      body: {
-        nom: "DeLarue",
-        prenom: "Jean-miche",
-        email: "jeanjean@fr",
-        num_tel: '090099',
-        role: "client",
-        password: " "
-      }
-    }
-    const res = createMockRes()
-    await expect(createAuthController(req, res)).rejects.toMatchObject({
-      statusCode: 400,
-      message: "Champ obligatoire manquant"
-    })
+  it('appelle next avec une ErrorHttp 422 si req.body est undefined', async () => {
+    const next = jest.fn()
+
+    await inscription({}, createMockRes(), next)
+
+    expect(next.mock.calls[0][0]).toBeInstanceOf(ErrorHttp)
   })
-  it("renvoie 204 sans body si le compte a bien été crée", async () => {
-    // GIVEN : donnés valides, service OK
+})
+
+describe('inscription : création du compte', () => {
+  it('renvoie 201 avec le user si le compte est créé', async () => {
     const req = {
       body: {
-        nom: "DeLarue",
-        prenom: "Jean-miche",
-        email: "jeanjean@fr",
-        num_tel: '090099',
-        role: "client",
-        password: "password"                
-      }
+        ...VALID_BODY,
+        nom: '  DeLarue ',
+        email: '  JeanJean@Mail.fr ',
+      },
     }
     const res = createMockRes()
-    
-    await createAuthService.mockResolvedValue(undefined)
+    const next = jest.fn()
+    const user = { id: 1, nom: 'DeLarue', prenom: 'Jean-Michel' }
+    loginService.inscrire.mockResolvedValue(user)
 
-     // WHEN
-     await createAuthController(req, res)
+    await inscription(req, res, next)
 
-    // THEN
-     expect(res.statusCode).toBe(204)
-     expect(res.send).toHaveBeenCalled()
-     expect(createAuthService).toHaveBeenCalled(
-      "DeLarue",
-      "Jean-miche",
-      "jeanjean@fr",
-      '090099',
-      "client",
-      "password"
-     )
+    // les champs sont nettoyés (trim, email en minuscules) avant l'appel au service
+    expect(loginService.inscrire).toHaveBeenCalledWith({
+      nom: 'DeLarue',
+      prenom: 'Jean-Michel',
+      email: 'jeanjean@mail.fr',
+      tel: '0600000000',
+      motDePasse: 'password123',
     })
+    expect(res.statusCode).toBe(201)
+    expect(res.body).toEqual({ message: 'Compte crée avec suscès', user })
+    expect(next).not.toHaveBeenCalled()
+  })
+
+  it("transmet à next l'erreur levée par le service (ex : email déjà utilisé)", async () => {
+    const res = createMockRes()
+    const next = jest.fn()
+    const erreur = new ErrorHttp(409, 'Email déjà utilisé')
+    loginService.inscrire.mockRejectedValue(erreur)
+
+    await inscription({ body: { ...VALID_BODY } }, res, next)
+
+    expect(next).toHaveBeenCalledWith(erreur)
+    expect(res.statusCode).toBeNull()
+  })
 })
