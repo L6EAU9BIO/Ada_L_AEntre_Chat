@@ -21,7 +21,7 @@ import * as adminService from "../services/adminService.js"
  *       200:
  *         description: La réservation
  */
-router.get("/:id", getReservationById)
+
  
 export async function verifAdmin(req, res) {
     try{
