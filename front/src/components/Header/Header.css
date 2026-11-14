@@ -19,3 +19,16 @@
     height: 8rem;
     padding: 0.5rem;
 }
+
+.bouton-deconnexion{
+    margin-left: auto;
+    align-self: center;
+    margin-right: 1.5rem;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 1rem;
+    background-color: var(--orange);
+    color:var(--beige);
+    font-size: 1rem;
+    cursor: pointer;
+}
