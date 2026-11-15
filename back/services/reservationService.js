@@ -18,7 +18,7 @@ async function verifierCapacite(room_id, date_reservation, personnes, idExclu = 
 
     if(dejaBloquee + placesBloquees(personnes) > salle.nbr_places) {
         throw new ErrorHttp(409, "Plus assez de place dans cette salle sur ce créneau", {
-            places_restantes: salle.nbr_places - dejaBloquee
+            places_restantes: Math.max(0, salle.nbr_places - dejaBloquee)
         })
     }
 }
