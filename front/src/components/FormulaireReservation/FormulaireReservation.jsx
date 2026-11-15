@@ -48,8 +48,11 @@ function FormulaireReservation({ salle, onRetour }) {
         ? []
         : HORAIRES.filter((h) => !estPasse(h) && placesOccupees(h) + places <= salle.nbr_places);
 
+  const horaireValide = horairesDisponibles.includes(horaire) ? horaire : "";
+  const complet = horaireValide !== "";
+
   return (
-    <section>
+    <form className="formulaire-reservation" onSubmit={(e) => e.preventDefault()}>
       <button type="button" onClick={onRetour}>
         Changer de salle
       </button>
@@ -74,8 +77,6 @@ function FormulaireReservation({ salle, onRetour }) {
         value={date}
         onChange={(e) => setDate(e.target.value)}
       />
-      <p>Date choisie : {date}</p>
-
       <p>Horaire</p>
 
         {date === "" && <p>Choisis d'abord une date.</p>}
@@ -88,15 +89,23 @@ function FormulaireReservation({ salle, onRetour }) {
             <button
                 type="button"
                 key={h}
-                className={h === horaire ? "horaire actif" : "horaire"}
+                className={h === horaireValide ? "horaire actif" : "horaire"}
                 onClick={() => setHoraire(h)}
             >
                 {h}
             </button>
         ))}
       </div>
-      <p>Horaire choisi : {horaire}</p>
-    </section>
+      {complet && (
+        <p className='resume'>
+            Votre réservation : {personnes} personne(s) - {salle.nom} - le {date} à {horaireValide}
+        </p>
+      )}
+      <button type="submit" className='valider' disabled={!complet}>
+        Valider
+      </button>
+
+    </form>
   );
 }
 
