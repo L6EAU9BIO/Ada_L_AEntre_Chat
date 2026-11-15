@@ -15,7 +15,13 @@ function ConsulterReservations() {
     const salleActive = salleId ?? salles[0]?.id ?? null
     const salle = salles.find((s) => s.id === salleActive)
 
-    const { reservations, erreur } = useReservations(salleActive, date)
+    const { reservations, erreur, supprimer } = useReservations(salleActive, date)
+
+    function handleSupprimer(id) {
+        if(window.confirm("Supprimer cette reservation ?")) {
+            supprimer(id)
+        }
+    }
 
     return (
         <section className="consulter">
@@ -32,7 +38,11 @@ function ConsulterReservations() {
             {date !== "" && <h3>{formaterDate(date)}</h3>}
             {(erreurSalles || erreur) && <p role="alert">{erreurSalles || erreur}</p>}
 
-            <ListeCreneaux creneaux={regrouperParCreneau(reservations)} capacite={salle?.nbr_places} />
+            <ListeCreneaux 
+                creneaux={regrouperParCreneau(reservations)} 
+                capacite={salle?.nbr_places}
+                onSupprimer={handleSupprimer} 
+            />
         </section>
     )
 }
