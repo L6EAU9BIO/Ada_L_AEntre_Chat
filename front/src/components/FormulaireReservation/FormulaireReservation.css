@@ -1,0 +1,17 @@
+.horaires {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.horaire {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 1rem;
+    cursor: pointer;
+}
+
+.horaire.actif {
+    background-color: var(--orange);
+    color: var(--beige);
+}
