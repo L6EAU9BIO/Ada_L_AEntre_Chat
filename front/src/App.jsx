@@ -6,6 +6,7 @@ import Layout from "./components/Layout/Layout.jsx";
 import RouteProtegee from "./components/RouteProtegee/RouteProtegee.jsx";
 import Booking from "./components/Booking/Booking.jsx";
 import Connexion from "./pages/Connexion.jsx";
+import Reservation from "./pages/Reservation.jsx";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route element={<RouteProtegee />}>
           <Route element={<Layout />}>
             <Route path="/" element={<Booking />} />
+            <Route path="/reservation" element={<Reservation />} />
           </Route>
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
