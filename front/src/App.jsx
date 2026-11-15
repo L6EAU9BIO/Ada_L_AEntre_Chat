@@ -7,6 +7,7 @@ import RouteProtegee from "./components/RouteProtegee/RouteProtegee.jsx";
 import Booking from "./components/Booking/Booking.jsx";
 import Connexion from "./pages/Connexion.jsx";
 import Reservation from "./pages/Reservation.jsx";
+import ConsulterReservations from "./pages/ConsulterReservations.jsx";
 
 function App() {
   return (
@@ -16,8 +17,11 @@ function App() {
         <Route path="/connexion" element={<Connexion />} />
         <Route element={<RouteProtegee />}>
           <Route element={<Layout />}>
-            <Route path="/" element={<Booking />} />
-            <Route path="/reservation" element={<Reservation />} />
+            <Route path="/" element={<Navigate to="/reservation" replace />}/>
+            <Route path="/reservation" element={<Booking />}>
+              <Route index element={<Reservation />} />
+              <Route path="consulter" element={<ConsulterReservations />} />
+            </Route>
           </Route>
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
