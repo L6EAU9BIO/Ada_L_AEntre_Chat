@@ -1,31 +1,27 @@
 // import { useState } from 'react'
-import './App.css'
-import { Routes, Route} from "react-router";
-import Header from './components/Header/Header.jsx';
-import Booking from './components/Booking/Booking.jsx';
-import Navbar from './components/NavBar/Navbar.jsx';
-import Connexion from './pages/Connexion.jsx';
+import "./App.css";
+import { Routes, Route, Navigate } from "react-router";
+import Header from "./components/Header/Header.jsx";
+import Layout from "./components/Layout/Layout.jsx";
+import RouteProtegee from "./components/RouteProtegee/RouteProtegee.jsx";
+import Booking from "./components/Booking/Booking.jsx";
+import Connexion from "./pages/Connexion.jsx";
 
 function App() {
-  // const [count, setCount] = useState(0)
-
   return (
     <>
-      {/* Will help to use our page as a single page */}
-      <Header/>
-      <div className='page'>
-          <Navbar/>
-          
-          <main className='contenu'>       
-              <Routes>
-                {/* Place to fill when the code will be more advanced */}
-                <Route path="/" element={<Booking/>}/>
-                <Route path="/connexion" element={<Connexion/>}/>
-              </Routes>
-          </main>
-      </div>
+      <Header />
+      <Routes>
+        <Route path="/connexion" element={<Connexion />} />
+        <Route element={<RouteProtegee />}>
+          <Route element={<Layout />}>
+            <Route path="/" element={<Booking />} />
+          </Route>
+        </Route>
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
