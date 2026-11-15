@@ -1,11 +1,13 @@
 import { useState, useEffect} from "react"
 import { listerSalles } from "../services/roomApi.js"
+import CarteSalle from "../components/CarteSalle/CarteSalle.jsx"
 
 
 function Reservation() {
     const [salles, setSalles] = useState([])
     const [chargement, setChargement] = useState(true)
     const[erreur, setErreur] = useState("")
+    const [salleChoisie, setSalleChoisie] = useState(null)
 
     useEffect(()=> {
         listerSalles()
@@ -16,17 +18,24 @@ function Reservation() {
 
     if(chargement) return <p>Chargement des salles...</p>
     if(erreur) return <p role="alert">{erreur}</p>
+    if(salleChoisie) {
+        return (
+            <section>
+                <h2>Reserver : {salleChoisie.nom}</h2>
+                <button onClick={() => setSalleChoisie(null)}>Changer de salle</button>
+                <p>Le formulaire arrive à l'étape suivante.</p>
+            </section>
+        )
+    }
 
     return (
         <section>
             <h2>Réserver</h2>
-            <ul>
+            <div className="liste-salles">
                 {salles.map((salle) =>(
-                    <li key={salle.id}>
-                        {salle.nom} - {salle.nbr_places} places
-                    </li>
+                    <CarteSalle key={salle.id} salle={salle} onChoisir={setSalleChoisie}/>
                 ))}
-            </ul>
+            </div>
         </section>
     )
 } 
