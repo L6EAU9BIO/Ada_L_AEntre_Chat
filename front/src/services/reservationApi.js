@@ -15,3 +15,10 @@ export function creerReservation(reservation){
 export function supprimeReservation(id){
     return request(`/reservation/${id}`, {method: "DELETE"})
 }
+
+export function modifierReservation(id,data) {
+    return request(`/reservation/${id}`, {
+        method: "PUT",
+        body:JSON.stringify(data),
+    })
+}
