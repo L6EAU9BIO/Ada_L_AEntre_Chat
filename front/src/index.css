@@ -19,3 +19,8 @@
     src: url("./assets/fonts/fat-kat.ttf") format("truetype");
     font-display: swap;
 }
+
+body {
+    background-color: var(--beige);
+    min-height: 100vh;
+}
