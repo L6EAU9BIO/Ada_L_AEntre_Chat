@@ -47,6 +47,15 @@ export async function creatReservation(data) {
 }
 
 export async function updateReservation(id, data) {
+    const actuelle = await reservationModel.findById(id)
+    if(!actuelle) return null
+
+    await verifierCapacite(
+        actuelle.room_id,
+        data.date_reservation ?? actuelle.date_reservation,
+        data.places_reservation ?? actuelle.places_reservation,
+        id
+    )
     return reservationModel.updateReservation(id, data)
 }
 
