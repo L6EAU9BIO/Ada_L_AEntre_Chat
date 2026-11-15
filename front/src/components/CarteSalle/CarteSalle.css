@@ -1,0 +1,25 @@
+.carte-salle {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1rem;
+    border-radius: 1rem;
+    background-color: white;
+}
+
+.carte-salle h3 {
+    color: var(--marron);
+}
+
+.carte-salle-description {
+    flex: 1;
+}
+
+.carte-salle button {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 1rem;
+    background-color: var(--orange);
+    color: var(--beige);
+    cursor: pointer;
+}
