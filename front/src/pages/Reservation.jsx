@@ -27,7 +27,6 @@ function Reservation() {
 
     return (
         <section>
-            <h2>Réserver</h2>
             <div className="liste-salles">
                 {salles.map((salle) =>(
                     <CarteSalle key={salle.id} salle={salle} onChoisir={setSalleChoisie}/>
