@@ -15,13 +15,13 @@ BEGIN;
 -- STAFFS (id 1 = Pomme, 2 = Lucas, 3 = Inès)
 -- -------------------------------------------------------------
 INSERT INTO staffs (nom, prenom, num_tel, role, mail, date_arrivee, date_depart) VALUES
-('Martin',  'Pomme', '06 00 00 01 01', 'gerant',  'pomme@laentrechat.fr', '2024-03-01', NULL),
-('Garnier', 'Lucas', '06 00 00 01 02', 'employe', 'lucas@laentrechat.fr', '2025-06-15', NULL),
-('Moreau',  'Inès',  '06 00 00 01 03', 'employe', 'ines@laentrechat.fr',  '2026-01-05', NULL);
+('Martin',  'Pomme', '06 00 00 01 01', 'gerant',  'pomme@laentrechats.fr', '2024-03-01', NULL),
+('Garnier', 'Lucas', '06 00 00 01 02', 'employe', 'lucas@laentrechats.fr', '2025-06-15', NULL),
+('Moreau',  'Inès',  '06 00 00 01 03', 'employe', 'ines@laentrechats.fr',  '2026-01-05', NULL);
 
-UPDATE staffs SET mot_de_passe_hash = '$2b$10$R6tuDoFfWU2BVcYGYiLFbeguLUnQC7jOmewEDKPcubSN.NPiMdjli' WHERE mail = 'pomme@laentrechat.fr';
-UPDATE staffs SET mot_de_passe_hash = '$2b$10$pFgMbwb4OHtWslJb2zI5CuMp9h5FMR6i6K2.N9p0IqkAFO.VUaiT.' WHERE mail = 'lucas@laentrechat.fr';
-UPDATE staffs SET mot_de_passe_hash = '$2b$10$CoOFFGv/VulUbDsDI09c/O.1Ex.H3qO7Wt9Haj4PtCrNel117m6h6' WHERE mail = 'ines@laentrechat.fr';
+UPDATE staffs SET mot_de_passe_hash = '$2b$10$R6tuDoFfWU2BVcYGYiLFbeguLUnQC7jOmewEDKPcubSN.NPiMdjli' WHERE mail = 'pomme@laentrechats.fr';
+UPDATE staffs SET mot_de_passe_hash = '$2b$10$pFgMbwb4OHtWslJb2zI5CuMp9h5FMR6i6K2.N9p0IqkAFO.VUaiT.' WHERE mail = 'lucas@laentrechats.fr';
+UPDATE staffs SET mot_de_passe_hash = '$2b$10$CoOFFGv/VulUbDsDI09c/O.1Ex.H3qO7Wt9Haj4PtCrNel117m6h6' WHERE mail = 'ines@laentrechats.fr';
 
 -- -------------------------------------------------------------
 -- ROOMS (id 1 = Salon, 2 = L'Étage, 3 = Cocon)
@@ -29,9 +29,9 @@ UPDATE staffs SET mot_de_passe_hash = '$2b$10$CoOFFGv/VulUbDsDI09c/O.1Ex.H3qO7Wt
 INSERT INTO rooms (nom, nbr_places, acces_pmr, description) VALUES
 ('Le Salon', 20, true,
  'La grande salle de plain-pied, ouverte sur la vitrine. Canapés, tables basses et arbres à chats au plafond : c''est ici que la plupart des pensionnaires font la sieste au soleil. Idéale pour les groupes et les anniversaires.'),
-('L''Étage', 15, false,
+('L''Étage', 14, false,
  'Au premier étage, accessible uniquement par un escalier en colimaçon. Ambiance bibliothèque, lumière tamisée, coussins au sol et passerelles murales pour les chats grimpeurs. Parfaite pour lire ou travailler au calme.'),
-('Le Cocon', 6, true,
+('Le Cocon', 10, true,
  'Petite pièce feutrée en rez-de-chaussée, pensée pour les chats timides et les visites en petit comité. Éclairage doux, bruit limité, accès de plain-pied. Recommandée pour une première rencontre avant une adoption.');
 
 -- -------------------------------------------------------------
