@@ -1,4 +1,5 @@
 import "./FormulaireReservation.css";
+import { heureDe, formaterDate } from "../../utils/dates.js";
 import { useEffect, useState } from "react";
 import {
   creerReservation,
@@ -38,11 +39,6 @@ function FormulaireReservation({ salle, onRetour }) {
     );
   }
 
-  function heureDe(dateTexte) {
-    const heure = new Date(dateTexte).getHours();
-    return `${String(heure).padStart(2, "0")}:00`;
-  }
-
   function placesOccupees(h) {
     return reservationsDuJour
       .filter((r) => heureDe(r.date_reservation) === h)
@@ -53,15 +49,6 @@ function FormulaireReservation({ salle, onRetour }) {
     return (
       date === aujourdhui && Number(h.slice(0, 2)) <= new Date().getHours()
     );
-  }
-
-  function formaterDate(dateTexte) {
-    return new Date(`${dateTexte}T00:00`).toLocaleDateString("fr-FR", {
-        weekday: "long",
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-    })
   }
 
   async function handleSubmit(e) {
