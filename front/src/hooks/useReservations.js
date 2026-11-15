@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react"
-import { listerReservation, supprimeReservation } from "../services/reservationApi.js"
+import { listerReservation, modifierReservation, supprimeReservation } from "../services/reservationApi.js"
 
 
 export function useReservations(salleId, date) {
@@ -26,5 +26,17 @@ export function useReservations(salleId, date) {
         }
     }, [recharger])
 
-    return { reservations, erreur, recharger, supprimer }
+    const modifier = useCallback(async (id, data) =>{
+        setErreur("")
+        try{
+            await modifierReservation(id, data)
+            recharger()
+            return true
+        } catch (err) {
+            setErreur(err.message)
+            return false
+        }
+    }, [recharger])
+
+    return { reservations, erreur, recharger, supprimer, modifier }
 }

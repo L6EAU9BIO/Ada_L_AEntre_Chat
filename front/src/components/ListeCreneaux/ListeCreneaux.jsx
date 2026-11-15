@@ -1,6 +1,7 @@
 import "./ListeCreneaux.css";
+import LigneReservation from "../LigneReservation/LigneReservation.jsx";
 
-function ListeCreneaux({ creneaux, capacite, onSupprimer }) {
+function ListeCreneaux({ creneaux, capacite, onModifier, onSupprimer }) {
   return (
     <ul className="liste-creneaux">
       {creneaux.map((c) => (
@@ -19,16 +20,13 @@ function ListeCreneaux({ creneaux, capacite, onSupprimer }) {
           {c.reservations.length > 0 && (
             <ul className="creneau-details">
               {c.reservations.map((r) => (
-                <li key={r.id}>
-                  {r.places_reservation} personne(s)
-                  <button
-                    type="button"
-                    className="supprimer"
-                    onClick={() => onSupprimer(r.id)}
-                  >
-                    Supprimer
-                  </button>
-                </li>
+                <LigneReservation
+                    key={r.id}
+                    reservation={r}
+                    capacite={capacite}
+                    onModifier={onModifier}
+                    onSupprimer={onSupprimer}    
+                />
               ))}
             </ul>
           )}

@@ -1,0 +1,38 @@
+.ligne-reservation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.actions,
+.compteur-mini {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.ligne-reservation button {
+    padding: 0.2rem 0.8rem;
+    border: none;
+    border-radius: 0.8rem;
+    color: white;
+    cursor: pointer;
+}
+
+.modifier,
+.compteur-mini button {
+    background-color: var(--gris);
+}
+
+.enregistrer {
+    background-color: var(--orange);
+}
+
+.annuler {
+    background-color: var(--kaki-marron);
+}
+
+.supprimer {
+    background-color: var(--marron);
+}
