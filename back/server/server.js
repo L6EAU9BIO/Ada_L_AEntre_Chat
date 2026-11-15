@@ -11,6 +11,7 @@ import routerReservation from "../routes/reservation.js"
 import routerStaff from "../routes/staff.js"
 import routerTask from "../routes/task.js"
 import routerAuth from "../routes/auth.js"
+import routerRoom from "../routes/room.js";
 import { gestionErreurs } from "../middlewares/erreurs.js";
 import cookieParser from "cookie-parser";
 
@@ -36,6 +37,7 @@ app.use("/api/client", routerClient);
 app.use("/api/reservation", routerReservation);
 app.use("/api/staff", routerStaff);
 app.use("/api/task", routerTask);
+app.use("/api/rooms", routerRoom)
 // GET /api/health/db => healthRoutes => controller => service => model
 app.use("/api", healthRoutes);
 
