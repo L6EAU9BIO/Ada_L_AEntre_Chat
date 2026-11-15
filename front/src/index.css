@@ -24,3 +24,7 @@ body {
     background-color: var(--beige);
     min-height: 100vh;
 }
+
+button {
+    font-weight: 800;
+}
