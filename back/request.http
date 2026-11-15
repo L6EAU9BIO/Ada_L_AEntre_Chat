@@ -3,37 +3,37 @@
 # POST {{api}}/auth/connexion
 # Content-Type: application/json
 
-# {"email": "pomme@laentrechat.fr", "motDePasse": "pomme1234"}
+# {"email": "pomme@laentrechats.fr", "motDePasse": "pomme1234"}
 
 # POST {{api}}/auth/connexion
 # Content-Type: application/json
 
-# {"email": " Pomme@laEntrechat.fr", "motDePasse": "pomme1234"}
+# {"email": " Pomme@laEntrechats.fr", "motDePasse": "pomme1234"}
 
 # POST {{api}}/auth/connexion
 # Content-Type: application/json
 
-# {"email": " lucas@laEntrechat.fr", "motDePasse": "lucas1234"}
+# {"email": " lucas@laEntrechats.fr", "motDePasse": "lucas1234"}
 
 # POST {{api}}/auth/connexion
 # Content-Type: application/json
 
-# {"email": "pomme@laentrechat.fr", "motDePasse": "faux"}
+# {"email": "pomme@laentrechats.fr", "motDePasse": "faux"}
 
 # POST {{api}}/auth/connexion
 # Content-Type: application/json
 
-# {"email": "inconnu@laEntrechat.fr", "motDePasse": "faux"}
+# {"email": "inconnu@laEntrechats.fr", "motDePasse": "faux"}
 
 # POST {{api}}/auth/connexion
 # Content-Type: application/json
 
-# {"email": "claire.dupuis@exmple.fr", "motDePasse": "faux"}
+# {"email": "claire.dupuis@exmples.fr", "motDePasse": "faux"}
 
 # POST {{api}}/auth/connexion
 # Content-Type: application/json
 
-# {"email": "pomme@laentrechat.fr"}
+# {"email": "pomme@laentrechats.fr"}
 
 # POST {{api}}/auth/connexion
 # Content-Type: application/json

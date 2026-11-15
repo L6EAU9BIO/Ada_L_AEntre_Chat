@@ -17,6 +17,18 @@ export async function findByRoomAndDate(room_id , date_reservation){
     // requete pour recuperer toute les reservation
 }
 
+export async function findByRoomAndCreneau(room_id, date_reservation, idExclu = null) {
+    const { rows } = await pool.query(
+        `SELECT id, places_reservation
+        FROM reservations
+        WHERE room_id= $1
+            AND date_reservation = $2
+            AND ($3::int IS NULL OR id <> $3)`,
+        [room_id, date_reservation, idExclu]
+    )
+    return rows
+}
+
 export async function findById(id){
     // requete pour recuperer une reservation
     const { rows } = await pool.query(
