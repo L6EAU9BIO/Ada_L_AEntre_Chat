@@ -1,6 +1,7 @@
 import { useState, useEffect} from "react"
 import { listerSalles } from "../services/roomApi.js"
 import CarteSalle from "../components/CarteSalle/CarteSalle.jsx"
+import FormulaireReservation from "../components/FormulaireReservation/FormulaireReservation.jsx"
 
 
 function Reservation() {
@@ -20,11 +21,7 @@ function Reservation() {
     if(erreur) return <p role="alert">{erreur}</p>
     if(salleChoisie) {
         return (
-            <section>
-                <h2>Reserver : {salleChoisie.nom}</h2>
-                <button onClick={() => setSalleChoisie(null)}>Changer de salle</button>
-                <p>Le formulaire arrive à l'étape suivante.</p>
-            </section>
+            <FormulaireReservation salle={salleChoisie} onRetour= {() => setSalleChoisie(null)} />
         )
     }
 
