@@ -36,3 +36,11 @@
 .planning-icon {
     height: 5rem;
 }
+
+.navbar-section button {
+    cursor: pointer;
+}
+
+.navbar-section button.actif {
+    background-color: var(--marron);
+}

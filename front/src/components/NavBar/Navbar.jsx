@@ -1,4 +1,5 @@
 import './Navbar.css'
+import { useNavigate, useLocation } from 'react-router'
 
 // IMPORT IMAGE
 import reservationIcon from '../../assets/reservation.png'
@@ -8,11 +9,18 @@ import adoptionIcon from '../../assets/adoption.png'
 import planningIcon from '../../assets/planning.png'
 
 function Navbar() {
+    const navigate= useNavigate()
+    const { pathname } = useLocation()
+    const dansReservation = pathname.startsWith("/reservation")
+
   return(  
     <>
     <section className='navbar-section'>
 
-        <button>
+        <button 
+            className={dansReservation ? "actif" : "" }
+            onClick={() => navigate("/reservation")}
+        >
             <img src={ reservationIcon } className='reservation-icon'/>
             RESERVATION
         </button>
