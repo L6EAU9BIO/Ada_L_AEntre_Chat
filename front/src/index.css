@@ -35,3 +35,14 @@ button,
 input {
     font-family: inherit;
 }
+
+.bandeau-erreur {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 0.8rem 1.2rem;
+    border-radius: 1rem;
+    background-color: var(--rouge);
+    color: white;
+    font-weight: 600;
+    text-align: center;
+}

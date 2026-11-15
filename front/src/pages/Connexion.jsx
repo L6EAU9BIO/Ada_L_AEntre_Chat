@@ -1,3 +1,4 @@
+import "./Connexion.css";
 import { useState } from "react";
 import { useNavigate, Navigate } from "react-router";
 import { useAuth } from "../hooks/useAuth.js";
@@ -19,9 +20,8 @@ function Connexion() {
   }
   if (chargement) return <p>Chargement ...</p>;
   if (utilisateur) return <Navigate to="/" replace />;
-  return (
-    <section>
-      <h2>Connexion</h2>
+   return (
+    <section className="page-connexion">
       <LoginForm onConnexion={handleConnexion} erreur={erreur} />
     </section>
   );
