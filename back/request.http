@@ -1,0 +1,45 @@
+@api = http://localhost:3000/api 
+
+# POST {{api}}/auth/connexion
+# Content-Type: application/json
+
+# {"email": "pomme@laentrechats.fr", "motDePasse": "pomme1234"}
+
+# POST {{api}}/auth/connexion
+# Content-Type: application/json
+
+# {"email": " Pomme@laEntrechats.fr", "motDePasse": "pomme1234"}
+
+# POST {{api}}/auth/connexion
+# Content-Type: application/json
+
+# {"email": " lucas@laEntrechats.fr", "motDePasse": "lucas1234"}
+
+# POST {{api}}/auth/connexion
+# Content-Type: application/json
+
+# {"email": "pomme@laentrechats.fr", "motDePasse": "faux"}
+
+# POST {{api}}/auth/connexion
+# Content-Type: application/json
+
+# {"email": "inconnu@laEntrechats.fr", "motDePasse": "faux"}
+
+# POST {{api}}/auth/connexion
+# Content-Type: application/json
+
+# {"email": "claire.dupuis@exmples.fr", "motDePasse": "faux"}
+
+# POST {{api}}/auth/connexion
+# Content-Type: application/json
+
+# {"email": "pomme@laentrechats.fr"}
+
+# POST {{api}}/auth/connexion
+# Content-Type: application/json
+
+# {"email": 42, "motDePasse": true}
+
+GET {{api}}/reservation?room_id=1&date=2026-12-01
+
+

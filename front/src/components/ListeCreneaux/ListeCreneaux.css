@@ -1,0 +1,42 @@
+.liste-creneaux {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+    width: 100%;
+}
+
+.creneau {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.6rem 1rem;
+    border-radius: 1rem;
+    background-color: #f8f6f0;
+}
+
+.creneau-entete {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.creneau-heure {
+    padding: 0.3rem 0.8rem;
+    border-radius: 0.8rem;
+    background-color: var(--gris);
+    color: white;
+    font-weight: 800;
+}
+
+.creneau.occupe {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.creneau-details {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}

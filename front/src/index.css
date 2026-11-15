@@ -1,0 +1,48 @@
+*{
+    padding: 0;
+    margin: 0;
+}
+
+:root {
+    --orange: #E29C51;
+    --beige: #ebdfce;
+    --marron: #5C4235;
+    --marron-sombre: #271813;
+    --gris: #9b9691;
+    --kaki-marron: #837966;
+    --vert-pastel: #9BB29E;
+    --rouge: #b3412e;
+
+}
+
+@font-face{
+    font-family: "Fat Kat";
+    src: url("./assets/fonts/fat-kat.ttf") format("truetype");
+    font-display: swap;
+}
+
+body {
+    background-color: var(--beige);
+    min-height: 100vh;
+    font-family: "Inter", sans-serif;
+}
+
+button {
+    font-weight: 800;
+}
+
+button,
+input {
+    font-family: inherit;
+}
+
+.bandeau-erreur {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 0.8rem 1.2rem;
+    border-radius: 1rem;
+    background-color: var(--rouge);
+    color: white;
+    font-weight: 600;
+    text-align: center;
+}

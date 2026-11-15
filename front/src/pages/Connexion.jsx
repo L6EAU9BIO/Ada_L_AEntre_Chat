@@ -1,0 +1,30 @@
+import "./Connexion.css";
+import { useState } from "react";
+import { useNavigate, Navigate } from "react-router";
+import { useAuth } from "../hooks/useAuth.js";
+import LoginForm from "../components/LoginForm/LoginForm.jsx";
+
+function Connexion() {
+  const { utilisateur, chargement, seConnecter } = useAuth();
+  const navigate = useNavigate();
+  const [erreur, setErreur] = useState("");
+
+  async function handleConnexion(email, motDePasse) {
+    setErreur("");
+    try {
+      await seConnecter(email, motDePasse);
+      navigate("/", { replace: true });
+    } catch (err) {
+      setErreur(err.message);
+    }
+  }
+  if (chargement) return <p>Chargement ...</p>;
+  if (utilisateur) return <Navigate to="/" replace />;
+   return (
+    <section className="page-connexion">
+      <LoginForm onConnexion={handleConnexion} erreur={erreur} />
+    </section>
+  );
+}
+
+export default Connexion;

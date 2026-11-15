@@ -1,0 +1,14 @@
+.page {
+    display:flex;
+}
+
+.contenu{
+    flex: 1;
+}
+
+.liste-salles {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    padding: 1rem;
+}
