@@ -3,6 +3,6 @@ import { verifAdmin } from "../controllers/adminController.js"
 
 const routerAdmin = Router();
 
-routerAdmin.get("/api/admin", verifAdmin)
+routerAdmin.get("/admin", verifAdmin)
 
 export default routerAdmin
