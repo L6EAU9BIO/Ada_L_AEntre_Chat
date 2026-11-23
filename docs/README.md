@@ -47,9 +47,9 @@ Priorisées avec la méthode MoSCoW, du point de vue de la gérante :
 | Base de données | PostgreSQL 18 (via Docker), client `pg` |
 | Tests | Jest |
 | Outils | ESLint, Git / GitHub, GitHub Actions, GitHub Projects |
-| Documentation d'API | Swagger (routes annotées, page pas encore servie) |
+| Documentation d'API | Swagger (annotations commencées, page pas encore servie) |
 
-Le choix de la stack est justifié dans l'[ADR 0005](docs/adr/0005-choix-stack-technique.md).
+Le choix de la stack est justifié dans l'[ADR 0005](adr/0005-choix-stack-technique.md).
 
 ---
 
@@ -161,8 +161,24 @@ cd front && npm install && cd ..
 
 ### 2. Configurer les variables d'environnement
 
+Le fichier `.env` se place **dans `back/`**, pas à la racine : c'est là que le lisent l'API (via `dotenv`, lancée depuis `back/`) et Docker (`env_file: ../back/.env` dans `db/docker-compose.yml`).
+
 ```bash
-cp .env.exemple .env
+cp .env.exemple back/.env
+```
+
+Puis remplir `back/.env`, une variable par ligne, au format `CLÉ=valeur` sans espace autour du `=`.
+
+```
+                 back/.env
+                     │
+       ┌─────────────┴──────────────┐
+       ▼                            ▼
+  API Node (back/)            Docker (db/)
+  DB_*, JWT_SECRET            POSTGRES_*
+       │                            │
+       ▼                            ▼
+  se connecte à la base  ──►  crée la base au 1er démarrage
 ```
 
 | Variable | Rôle | Exemple |
@@ -170,9 +186,27 @@ cp .env.exemple .env
 | `DB_HOST` | Adresse de la base | `localhost` |
 | `DB_PORT` | Port exposé par Docker | `5432` |
 | `DB_USER` / `DB_PASSWORD` / `DB_NAME` | Identifiants de connexion de l'API | — |
-| `POSTGRES_USER` / `POSTGRES_PASSWORD` / `POSTGRES_DB` | Identifiants utilisés par Docker pour créer la base (identiques aux trois précédents) | — |
-| `JWT_SECRET` | Clé de signature des tokens de connexion | une longue chaîne aléatoire |
-| `PORT` | Port de l'API Express | `3000` |
+| `POSTGRES_USER` / `POSTGRES_PASSWORD` / `POSTGRES_DB` | Identifiants utilisés par l'image `postgres:18` pour créer la base au premier démarrage | — |
+| `JWT_SECRET` | Clé de signature et de vérification des tokens de connexion | une longue chaîne aléatoire |
+| `PORT` | Prévu pour le port de l'API, **pas encore lu par le code** : l'API écoute toujours sur `3000` | `3000` |
+| `NODE_ENV` | Facultatif. À `production`, le cookie de connexion n'est envoyé qu'en HTTPS (`secure`). Absent en local | `production` |
+
+**Les `DB_*` et les `POSTGRES_*` doivent avoir les mêmes valeurs** : Docker crée l'utilisateur et la base avec les `POSTGRES_*`, puis l'API s'y connecte avec les `DB_*`. Deux noms différents parce que l'image Docker impose les siens.
+
+```
+POSTGRES_USER=aentre   →  Docker crée l'utilisateur « aentre »
+DB_USER=aentre         →  l'API se connecte avec « aentre »
+```
+
+Si les valeurs diffèrent, l'API échoue avec `password authentication failed`.
+
+Pour générer un `JWT_SECRET` :
+
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+```
+
+Le fichier `.env` est ignoré par Git (`.gitignore`) : il ne doit jamais être commité.
 
 ### 3. Lancer la base de données
 
@@ -236,17 +270,20 @@ Toutes les routes sont préfixées par `/api`. Les routes marquées 🔒 demande
 | DELETE 🔒 | `/reservation/:id` | Supprimer une réservation |
 | GET | `/health/db` | Tester la connexion à la base |
 
-Les routes `/chat`, `/client`, `/staff`, `/task` et `/admin` existent pour les fonctionnalités suivantes ; elles ne sont pas utilisées par la V1.
+Les routes `/chat`, `/client`, `/staff`, `/task` et `/admin` existent pour les fonctionnalités suivantes ; elles ne sont pas utilisées par la V1. `/client`, `/staff` et `/task` sont encore vides ; `/chat` propose un CRUD complet mais **sans `verifyToken`** pour l'instant (voir Limites connues).
 
 ---
 
 ## Limites connues
 
-- **Swagger** : les routes sont annotées, mais la page de documentation n'est pas encore servie.
+- **Swagger** : seules les routes `/chat` et `/health/db` sont annotées ; la réservation et l'authentification ne le sont pas encore, et la page de documentation n'est pas servie (`swagger-jsdoc` et `swagger-ui-express` sont installés).
+- **Routes `/chat` non protégées** : contrairement à `/reservation` et `/rooms`, elles ne passent pas par `verifyToken`. À corriger avant de brancher la fonctionnalité.
+- **Route `/admin`** : le routeur déclare le chemin `/api/admin` alors qu'il est déjà monté sur `/api/admin` ; l'URL effective est donc `/api/admin/api/admin`.
 - **Rôles** : la gérante et les employés ont pour l'instant les mêmes droits.
-- **Inscription client** (fonctionnalité Could) : la validation des champs est incomplète ; 6 tests sur 58 sont rouges.
+- **Inscription client** (fonctionnalité Could) : la validation des champs est incomplète ; 6 tests sur 58 sont rouges (`creatAuthController.test.js`).
 - **Règles du cadrage pas encore appliquées** : dimanche grisé, nom et téléphone du client obligatoires.
-- **Livraison** : `main` est en retard sur `dev` ; une livraison sur `main` est prévue à chaque jalon.
+- **Configuration en dur** : le port de l'API (`3000`), l'URL de l'API côté front (`front/src/services/api.js`) et l'origine CORS (`http://localhost:5173`) sont écrits dans le code. Pour un déploiement, ils deviendraient des variables (`PORT`, `VITE_API_URL`, `FRONT_URL`).
+- **Logs de débogage** : un middleware de `server.js` affiche chaque requête dans la console ; il est destiné au développement.
 
 ---
 
@@ -272,11 +309,11 @@ Le dossier de cadrage (description du projet, persona, tableau des risques) est 
 
 Les décisions sont écrites dans des ADR :
 
-1. [Choix du workflow](docs/adr/0001-choix-de-workflow.md)
-2. [Nommage des branches](docs/adr/0002-convention-nommage-branche.md)
-3. [Nommage des commits](docs/adr/0003-convention-nomage-commit.md)
-4. [Commentaires de Pull Request](docs/adr/0004-convention-commentaire-PR-com-GH.md)
-5. [Choix de la stack technique](docs/adr/0005-choix-stack-technique.md)
+1. [Choix du workflow](adr/0001-choix-de-workflow.md)
+2. [Nommage des branches](adr/0002-convention-nommage-branche.md)
+3. [Nommage des commits](adr/0003-convention-nomage-commit.md)
+4. [Commentaires de Pull Request](adr/0004-convention-commentaire-PR-com-GH.md)
+5. [Choix de la stack technique](adr/0005-choix-stack-technique.md)
 
 ---
 
