@@ -1,0 +1,30 @@
+.modale-fond {
+  position: fixed;   /* collé à l'écran, même si on scrolle */
+  inset: 0;          /* = top/right/bottom/left à 0 → plein écran */
+  background-color: rgba(39, 24, 19, 0.6); /* --marron-sombre à 60 % */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;      /* au-dessus du reste de la page */
+}
+
+.modale {
+  background-color: var(--beige);
+  color: var(--marron);
+  border-radius: 16px;
+  padding: 2rem;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.modale-bouton {
+  margin-top: 1.5rem;
+  background-color: var(--orange);
+  color: var(--beige);
+  border: none;
+  border-radius: 999px;
+  padding: 0.6rem 2rem;
+  font-weight: 800;
+  cursor: pointer;
+}

@@ -10,6 +10,7 @@ import {
   PLACES_PAR_TABLES,
   placesBloquees,
 } from "../../data/salles.js";
+import ModaleConfirmation from "../ModaleConfirmation/ModaleConfirmation.jsx";
 
 function FormulaireReservation({ salle, onRetour }) {
   const [personnes, setPersonnes] = useState(1);
@@ -117,7 +118,9 @@ function FormulaireReservation({ salle, onRetour }) {
         <p className="info-places">
           {places / PLACES_PAR_TABLES} tables(s) - {places} places bloquées
         </p>
-        <label htmlFor="date" className="intitule">Choisir une date</label>
+        <label htmlFor="date" className="intitule">
+          Choisir une date
+        </label>
         <input
           id="date"
           type="date"
@@ -154,7 +157,14 @@ function FormulaireReservation({ salle, onRetour }) {
           {envoi ? "Envoi..." : "Valider"}
         </button>
 
-        {message && <p className="succes">{message}</p>}
+        {message && (
+          <ModaleConfirmation
+            titre="Réservation réalisée avec succès"
+            onFermer={() => setMessage("")}
+          >
+            {message}
+          </ModaleConfirmation>
+        )}
         {erreurEnvoi && <p role="alert">{erreurEnvoi}</p>}
       </form>
     </div>
