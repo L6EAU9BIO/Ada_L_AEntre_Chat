@@ -20,6 +20,6 @@
     border: none;
     border-radius: 1rem;
     background-color: var(--orange);
-    color: var(--beige);
+    color: white;
     cursor: pointer;
 }
